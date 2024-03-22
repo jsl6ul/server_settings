@@ -1,0 +1,44 @@
+---
+- name: Set journald ini file
+  community.general.ini_file:
+    dest: /etc/systemd/journald.conf
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items: "{{ remote_syslog_journald_ini }}"
+  notify: Restart systemd-journald
+
+- name: Install rsyslog
+  ansible.builtin.package:
+    name: rsyslog
+
+- name: Create rsyslog work dir
+  ansible.builtin.file:
+    path: /var/spool/rsyslog
+    state: directory
+    mode: "0770"
+
+- name: Set rsyslog.conf
+  ansible.builtin.copy:
+    content: "{{ remote_syslog_rsyslog_conf }}"
+    dest: /etc/rsyslog.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart rsyslog
+  when: remote_syslog_server is defined and remote_syslog_server != ""
+
+- name: Enable / start rsyslog
+  ansible.builtin.service:
+    name: rsyslog
+    state: started
+    enabled: true
+  ignore_errors: true
+  when: remote_syslog_server is defined and remote_syslog_server != ""
+
+- name: Disable / stop rsyslog
+  ansible.builtin.service:
+    name: rsyslog
+    enabled: false
+    state: stopped
+  when: remote_syslog_server is not defined or remote_syslog_server == ""
