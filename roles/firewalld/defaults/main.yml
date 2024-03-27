@@ -1,0 +1,13 @@
+---
+# firewalld should be started or stopped ?
+firewalld_state: stopped
+
+# firewalld should start on boot ?
+firewalld_enabled: false
+
+# LogDenied: all, unicast, broadcast, multicast or off
+firewalld_LogDenied: "off"
+
+# Disabled zone drifting for security reasons.
+# https://firewalld.org/2020/01/allowzonedrifting
+firewalld_AllowZoneDrifting: "no"
