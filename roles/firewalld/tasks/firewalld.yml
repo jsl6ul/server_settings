@@ -1,0 +1,41 @@
+---
+- name: Set /etc/firewalld/zones/public.xml
+  template:
+    src: firewalld_zone.xml.j2
+    dest: /etc/firewalld/zones/public.xml
+  notify: Restart firewalld
+
+- name: Set LogDenied
+  lineinfile:
+    path: /etc/firewalld/firewalld.conf
+    regexp: "^LogDenied"
+    line: "LogDenied={{ firewalld_LogDenied }}"
+  notify: Restart firewalld
+
+- name: Set AllowZoneDrifting
+  lineinfile:
+    path: /etc/firewalld/firewalld.conf
+    regexp: "^AllowZoneDrifting"
+    line: "AllowZoneDrifting={{ firewalld_AllowZoneDrifting }}"
+  notify: Restart firewalld
+
+- name: Delete all predefinded zones except public
+  file:
+    path: "/etc/firewalld/zones/{{ item }}.xml"
+    state: absent
+  with_items:
+    - block
+    - dmz
+    - drop
+    - external
+    - home
+    - internal
+    - trusted
+    - work
+  notify: Restart firewalld
+
+- name: Set firewalld service
+  service:
+    name: firewalld
+    state: "{{ firewalld_state }}"
+    enabled: "{{ firewalld_enabled }}"

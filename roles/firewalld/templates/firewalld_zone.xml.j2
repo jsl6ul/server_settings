@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<zone target="%%REJECT%%">
+{% for rule in merged_firewalld_rules %}
+{% for source in rule.sources %}
+{% if rule.services is defined %}{% for service in rule.services %}
+ <rule family="{{ rule.family|default('ipv4') }}">
+  <source address="{{ source }}"/>
+  <service name="{{ service }}"/>
+{% if rule.limit is defined %}
+  <{{ rule.action|default('accept') }}>
+    <limit value="{{ rule.limit }}"/>
+  </{{ rule.action|default('accept') }}>
+{% else %}
+  <{{ rule.action|default('accept') }}/>
+{% endif %}
+ </rule>
+{% endfor %}{% endif %}
+{% if rule.ports is defined %}{% for port in rule.ports %}
+ <rule family="{{ rule.family|default('ipv4') }}">
+  <source address="{{ source }}"/>
+  <port protocol="{{ (port|string).split('/')[1]|default('tcp') }}" port="{{ (port|string).split('/')[0] }}"/>
+{% if rule.limit is defined %}
+  <{{ rule.action|default('accept') }}>
+    <limit value="{{ rule.limit }}"/>
+  </{{ rule.action|default('accept') }}>
+{% else %}
+  <{{ rule.action|default('accept') }}/>
+{% endif %}
+ </rule>
+{% endfor %}{% endif %}
+{% if rule.icmps is defined %}{% for icmp in rule.icmps %}
+ <rule family="{{ rule.family|default('ipv4') }}">
+  <source address="{{ source }}"/>
+  <icmp-type name="{{ icmp }}"/>
+{% if rule.limit is defined %}
+  <{{ rule.action|default('accept') }}>
+    <limit value="{{ rule.limit }}"/>
+  </{{ rule.action|default('accept') }}>
+{% else %}
+  <{{ rule.action|default('accept') }}/>
+{% endif %}
+ </rule>
+{% endfor %}{% endif %}
+{% endfor %}
+{% endfor %}
+</zone>

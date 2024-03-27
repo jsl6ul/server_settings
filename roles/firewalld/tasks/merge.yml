@@ -1,0 +1,27 @@
+---
+# All instances of the `firewalld_rules` are merged.
+# see README.md for details.
+
+- name: Include vars from group_vars/all, group_vars/all/firewalld & host_vars
+  include_vars:
+    file: "{{ item }}"
+    name: "_mvars_{{ item|basename|splitext|first }}"
+  with_items:
+    - "{{ inventory_dir }}/group_vars/all.yml"
+    - "{{ inventory_dir }}/group_vars/all/firewalld.yml"
+    - "{{ inventory_dir }}/host_vars/{{ inventory_hostname }}.yml"
+  register: _reg_incl
+  failed_when: _reg_incl.failed and "Could not find or access" not in _reg_incl.message
+
+- name: Include vars from groups vars
+  include_vars:
+    file: "{{ inventory_dir }}/group_vars/{{ item }}.yml"
+    name: "_mvars_{{ item|basename|splitext|first }}"
+  loop: "{{ group_names }}"
+  register: _reg_incl
+  failed_when: _reg_incl.failed and "Could not find or access" not in _reg_incl.message
+
+- name: Merge all firewalld_rules
+  set_fact:
+    merged_firewalld_rules: "{{ merged_firewalld_rules|default([]) + lookup('ansible.builtin.vars', item).firewalld_rules|default([]) }}"
+  loop: "{{ query('varnames', '^_mvars_(.*)$') }}"
