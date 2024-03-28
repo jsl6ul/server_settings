@@ -1,0 +1,15 @@
+---
+- name: Stop smartd
+  service:
+    name: smartd
+    state: stopped
+
+- name: Start smartd
+  service:
+    name: smartd
+    state: stopped
+
+- name: Restart smartd
+  service:
+    name: smartd
+    state: restarted

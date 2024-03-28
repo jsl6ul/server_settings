@@ -1,0 +1,19 @@
+---
+- name: Install smartmontools
+  package:
+    name: smartmontools
+
+- name: Copy smartd.conf
+  copy:
+    dest: /etc/smartd.conf
+    owner: root
+    group: root
+    mode: 0644
+    content: "{{ smartd_conf }}"
+  notify: Restart smartd
+
+- name: Set smartd service
+  service:
+    name: smartd
+    state: "{{ smartd_state }}"
+    enabled: "{{ smartd_enabled }}"
