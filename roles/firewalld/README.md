@@ -1,6 +1,10 @@
 # firewalld
 
-Role to configure firewalld using a YAML structure.
+A role for configuring firewalld using a YAML structure.
+
+This role does not use the usual firewalld zones. All rules are placed 
+in the public zone, and restrictions are based on the source address 
+and destination port.
 
 ```
 firewalld_rules:
