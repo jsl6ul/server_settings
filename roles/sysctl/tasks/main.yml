@@ -1,0 +1,9 @@
+---
+- name: Set sysctl values
+  ansible.posix.sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: "{{ item.state|default('present') }}"
+    reload: "{{ item.reload|default(true) }}"
+  with_items: "{{ sysctl_values }}"
+  when: sysctl_values is defined

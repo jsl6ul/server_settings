@@ -1,0 +1,9 @@
+---
+# packages_present:
+#   - bsd-mailx
+#   - dnsutils
+#   - iproute2
+#   - iputils-ping
+
+# packages_absent:
+#   - systemd-timesyncd

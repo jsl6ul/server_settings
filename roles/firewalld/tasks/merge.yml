@@ -11,7 +11,10 @@
     - "{{ inventory_dir }}/group_vars/all/firewalld.yml"
     - "{{ inventory_dir }}/host_vars/{{ inventory_hostname }}.yml"
   register: _reg_incl
-  failed_when: _reg_incl.failed and "Could not find or access" not in _reg_incl.message
+  failed_when:
+    - _reg_incl.failed
+    - '"Could not find or access" not in _reg_incl.message'
+    - '"error while evaluating conditional" not in _reg_incl.message'
 
 - name: Include vars from groups vars
   include_vars:
@@ -19,7 +22,11 @@
     name: "_mvars_{{ item|basename|splitext|first }}"
   loop: "{{ group_names }}"
   register: _reg_incl
-  failed_when: _reg_incl.failed and "Could not find or access" not in _reg_incl.message
+  ignore_errors: true
+  failed_when:
+    - _reg_incl.failed
+    - '"Could not find or access" not in _reg_incl.message'
+    - '"error while evaluating conditional" not in _reg_incl.message'
 
 - name: Merge all firewalld_rules
   set_fact:

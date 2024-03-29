@@ -1,0 +1,12 @@
+---
+- name: Install packages
+  package:
+    name: "{{ packages_present }}"
+    state: present
+  when: packages_present is defined
+
+- name: Uninstall packages
+  package:
+    name: "{{ packages_absent }}"
+    state: absent
+  when: packages_absent is defined

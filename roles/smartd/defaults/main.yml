@@ -1,0 +1,18 @@
+---
+smartd_state: started
+smartd_enabled: true
+
+smartd_conf: |
+  # DEVICESCAN (smartd scans for disks and monitors all it finds)
+  # -a              monitor all attributes
+  # -o on           enable automatic online data collection
+  # -S on           enable automatic attribute autosave
+  # -n standby,q    do not check if disk is in standby, suppress log message & prevents disk from spinning up
+  # -s ...          schedule short and long self-tests
+  # -W 4,50,55      monitor temperature (4 degrees change, log if > 50c, warning if > 55c)
+  # -m ...          mail alerts
+  # -d removable    the device is removable... it should continue (instead of exiting) if the device does
+  #                 not appear to be present... suppresses warning if device is removed after startup.
+  #                 Removing device and connecting a different one to same interface is not supported.
+  # -r ID           track the raw device Temperature (190 Airflow_Temperature_Cel, 194 Temperature_Celsius)
+  DEVICESCAN -a -o on -S on -n standby,q -d removable -r 194 -r 190 -s (S/../.././02|L/../../6/04)
