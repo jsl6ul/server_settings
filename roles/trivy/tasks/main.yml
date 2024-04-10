@@ -1,0 +1,9 @@
+---
+- name: Include OS tasks
+  include_tasks: "{{ ansible_os_family }}.yml"
+
+- name: Copy trivy-scan.sh
+  copy:
+    src: trivy-scan.sh
+    dest: /usr/local/bin/trivy-scan.sh
+    mode: 0755
