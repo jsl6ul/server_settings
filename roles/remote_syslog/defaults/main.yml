@@ -14,7 +14,9 @@ remote_syslog_journald_ini:
 remote_syslog_rsyslog_conf: |
   # set rsyslog to forward only
   module(load="imuxsock") # system logging
+  {% if ansible_virtualization_type != 'lxc' %}
   module(load="imklog")   # kernel logging
+  {% endif %}
   $IncludeConfig /etc/rsyslog.d/*.conf
 
   # use a disk queue & forward anything received to a remote server 
