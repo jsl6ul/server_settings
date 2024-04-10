@@ -1,6 +1,6 @@
 ---
 
-# sysctl_values:
+# sysctl_entries:
 #   - { name: kernel.panic,       value: "60" } # reboot on kernel panic
 #   - { name: vm.panic_on_oom,    value: "1" }  # panic on oom
 #   - { name: kernel.printk,      value: "2 4 1 7" } # less printk in console
