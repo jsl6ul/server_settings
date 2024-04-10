@@ -1,0 +1,6 @@
+---
+
+cronjob_package: "{{ 'cronie' if ansible_os_family == 'RedHat' else 'cron' }}"
+
+# cronjob_entries:
+#   - { user: root, name: "rsync-backup", job: "rsync -a /home server.example.com:/opt/backups/ || logger Error while running cronjob rsync-backup", hour: "4", minute: "37", state: present }
