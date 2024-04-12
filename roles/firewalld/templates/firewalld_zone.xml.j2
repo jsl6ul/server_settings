@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <zone target="%%REJECT%%">
-{% for rule in merged_firewalld_rules %}
+{% for rule in _merged_firewalld_rules %}
 {% for source in rule.sources %}
 {% if rule.services is defined %}{% for service in rule.services %}
  <rule family="{{ rule.family|default('ipv4') }}">
