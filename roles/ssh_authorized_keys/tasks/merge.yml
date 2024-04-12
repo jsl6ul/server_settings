@@ -1,0 +1,33 @@
+---
+# All instances of the `ssh_authorized_keys` are merged.
+
+- name: Include vars from group_vars/all, group_vars/all/ssh_authorized_keys & host_vars
+  include_vars:
+    file: "{{ item }}"
+    name: "_mvsak_{{ item|basename|splitext|first }}"
+  with_items:
+    - "{{ inventory_dir }}/group_vars/all.yml"
+    - "{{ inventory_dir }}/group_vars/all/ssh_authorized_keys.yml"
+    - "{{ inventory_dir }}/host_vars/{{ inventory_hostname }}.yml"
+  register: _reg_incl
+  failed_when:
+    - _reg_incl.failed
+    - '"Could not find or access" not in _reg_incl.message'
+    - '"error while evaluating conditional" not in _reg_incl.message'
+
+- name: Include vars from groups vars
+  include_vars:
+    file: "{{ inventory_dir }}/group_vars/{{ item }}.yml"
+    name: "_mvsak_{{ item|basename|splitext|first }}"
+  loop: "{{ group_names }}"
+  register: _reg_incl
+  ignore_errors: true
+  failed_when:
+    - _reg_incl.failed
+    - '"Could not find or access" not in _reg_incl.message'
+    - '"error while evaluating conditional" not in _reg_incl.message'
+
+- name: Merge all ssh_authorized_keys
+  set_fact:
+    _merged_ssh_authorized_keys: "{{ _merged_ssh_authorized_keys|default([]) + lookup('ansible.builtin.vars', item).ssh_authorized_keys|default([]) }}"
+  loop: "{{ query('varnames', '^_mvsak_(.*)$') }}"
