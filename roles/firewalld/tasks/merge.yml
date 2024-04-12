@@ -5,7 +5,7 @@
 - name: Include vars from group_vars/all, group_vars/all/firewalld & host_vars
   include_vars:
     file: "{{ item }}"
-    name: "_mvars_{{ item|basename|splitext|first }}"
+    name: "_mvfwd_{{ item|basename|splitext|first }}"
   with_items:
     - "{{ inventory_dir }}/group_vars/all.yml"
     - "{{ inventory_dir }}/group_vars/all/firewalld.yml"
@@ -19,7 +19,7 @@
 - name: Include vars from groups vars
   include_vars:
     file: "{{ inventory_dir }}/group_vars/{{ item }}.yml"
-    name: "_mvars_{{ item|basename|splitext|first }}"
+    name: "_mvfwd_{{ item|basename|splitext|first }}"
   loop: "{{ group_names }}"
   register: _reg_incl
   ignore_errors: true
@@ -30,5 +30,5 @@
 
 - name: Merge all firewalld_rules
   set_fact:
-    merged_firewalld_rules: "{{ merged_firewalld_rules|default([]) + lookup('ansible.builtin.vars', item).firewalld_rules|default([]) }}"
-  loop: "{{ query('varnames', '^_mvars_(.*)$') }}"
+    _merged_firewalld_rules: "{{ _merged_firewalld_rules|default([]) + lookup('ansible.builtin.vars', item).firewalld_rules|default([]) }}"
+  loop: "{{ query('varnames', '^_mvfwd_(.*)$') }}"

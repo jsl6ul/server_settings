@@ -9,4 +9,4 @@
 
 - name: Import firewalld.yml
   import_tasks: firewalld.yml
-  when: merged_firewalld_rules is defined
+  when: _merged_firewalld_rules is defined
