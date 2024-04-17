@@ -1,0 +1,23 @@
+---
+- name: "Manage HBAC rules"
+  ipa_hbacrule:
+    name: "{{ item.name }}"
+    description: "{{ item.description }}"
+    host: "{{ item.host | default(omit) }}"
+    hostgroup: "{{ item.hostgroup | default(omit) }}"
+    user: "{{ item.user | default(omit) }}"
+    usergroup: "{{ item.usergroup | default(omit) }}"
+    state: "{{ item.state | default(omit) }}"
+    service: "{{ item.service | default(omit) }}"
+    servicecategory: "{{ item.servicecategory | default(omit) }}"
+    # Connection settings
+    ipa_host: "{{ ipa_host }}"
+    ipa_user: "{{ ipaadmin_user }}"
+    ipa_pass: "{{ ipaadmin_pass }}"
+    validate_certs: "{{ ipa_validate_certs }}"
+  register: _ipa_command_hbac
+  with_items: "{{ ipa_hbacrules }}"
+  loop_control:
+    label: "{{ item.name }}"
+  failed_when: (_ipa_command_hbac.failed == true) and ("no modifications to be performed" not in _ipa_command_hbac.msg)
+  when: ipa_hbacrules | default([]) | length>0

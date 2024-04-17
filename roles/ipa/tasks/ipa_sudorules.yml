@@ -1,0 +1,27 @@
+---
+- name: "Manage sudo rules"
+  ipa_sudorule:
+    name: "{{ item.name }}"
+    description: "{{ item.description }}"
+    host: "{{ item.host | default(omit) }}"
+    hostgroup: "{{ item.hostgroup | default(omit) }}"
+    user: "{{ item.user | default(omit) }}"
+    usergroup: "{{ item.usergroup | default(omit) }}"
+    state: "{{ item.state | default(omit) }}"
+    cmd: "{{ item.cmd | default(omit) }}"
+    cmdgroup: "{{ item.cmdgroup | default(omit) }}"
+    cmdcategory: "{{ item.cmdcategory | default(omit) }}"
+    runasusercategory: "{{ item.runasgroupcategory | default(omit) }}"
+    runasgroupcategory: "{{ item.runasgroupcategory | default(omit) }}"
+    sudoopt: "{{ item.sudoopt | default(omit) }}"
+    # Connection settings
+    ipa_host: "{{ ipa_host }}"
+    ipa_user: "{{ ipaadmin_user }}"
+    ipa_pass: "{{ ipaadmin_pass }}"
+    validate_certs: "{{ ipa_validate_certs }}"
+  register: _ipa_command_sudo
+  with_items: "{{ ipa_sudorules }}"
+  loop_control:
+    label: "{{ item.name }}"
+  failed_when: (_ipa_command_sudo.failed == true) and ("no modifications to be performed" not in _ipa_command_sudo.msg)
+  when: ipa_sudorules | default([]) | length>0
