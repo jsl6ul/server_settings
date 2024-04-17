@@ -9,7 +9,6 @@
     - "{{ inventory_dir }}/group_vars/all.yml"
     - "{{ inventory_dir }}/group_vars/all/firewalld.yml"
     - "{{ inventory_dir }}/host_vars/{{ inventory_hostname }}.yml"
-    - "{{ inventory_dir }}/host_vars/{{ inventory_hostname }}/firewalld.yml"
   register: _reg_incl
   failed_when:
     - _reg_incl.failed
