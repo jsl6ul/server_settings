@@ -11,3 +11,32 @@ firewalld_LogDenied: "off"
 # Disabled zone drifting for security reasons.
 # https://firewalld.org/2020/01/allowzonedrifting
 firewalld_AllowZoneDrifting: "no"
+
+# firewalld_rules:
+#   - name: allow some icmp
+#     sources: [0.0.0.0/0]
+#     family: ipv4
+#     icmps:
+#       - echo-request
+#       - echo-reply
+#       - fragmentation-needed
+#       - time-exceeded
+#       - destination-unreachable
+#     limit: 10/s
+# 
+#   - name: ssh from proxyjump
+#     sources:
+#       - 192.168.0.10/32   # proxyjump1
+#       - 192.168.0.11/32   # proxyjump2
+#     services:
+#       - ssh
+# 
+#   - name: node_exporter from monitoring
+#     sources:
+#       - 192.168.0.23/32   # prometheus server
+#     ports:
+#       - 9100/tcp
+# 
+#   - name: dhcp offer/ack/nak
+#     sources: [0.0.0.0/0]
+#     ports: [68/udp]
