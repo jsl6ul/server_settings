@@ -1,0 +1,20 @@
+---
+- name: "Manage groups"
+  ipa_group:
+    name: "{{ item.name }}"
+    description: "{{ item.description | default(omit) }}"
+    state: "{{ item.state | default(omit) }}"
+    user: "{{ item.user | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    external: "{{ item.external | default(omit) }}"
+    # Connection settings
+    ipa_host: "{{ ipa_host }}"
+    ipa_user: "{{ ipaadmin_user }}"
+    ipa_pass: "{{ ipaadmin_pass }}"
+    validate_certs: "{{ ipa_validate_certs }}"
+  register: _ipa_command_group
+  with_items: "{{ ipa_groups }}"
+  loop_control:
+    label: "{{ item.name }}"
+  failed_when: (_ipa_command_group.failed == true) and ("no modifications to be performed" not in _ipa_command_group.msg)
+  when: ipa_groups | default([]) | length>0

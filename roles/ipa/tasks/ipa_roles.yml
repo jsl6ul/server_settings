@@ -1,0 +1,16 @@
+---
+- name: "Manage roles"
+  ipa_role:
+    name: "{{ item.name }}"
+    privilege: "{{ item.privilege }}"
+    user: "{{ item.user }}"
+    state: "{{ item.state | default(omit) }}"
+    # Connection settings
+    ipa_host: "{{ ipa_host }}"
+    ipa_user: "{{ ipaadmin_user }}"
+    ipa_pass: "{{ ipaadmin_pass }}"
+    validate_certs: "{{ ipa_validate_certs }}"
+  with_items: "{{ ipa_roles }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when: ipa_roles | default([]) | length>0

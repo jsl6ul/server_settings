@@ -1,0 +1,28 @@
+---
+- name: "Manage config"
+  ipa_config:
+    configstring: "{{ item.configstring | default(omit) }}"
+    emaildomain: "{{ item.emaildomain | default(omit) }}"
+    loginshell: "{{ item.loginshell | default(omit) }}"
+    primarygroup: "{{ item.primarygroup | default(omit) }}"
+    groupobjectclasses: "{{ item.groupobjectclasses | default(omit) }}"
+    groupsearchfields: "{{ item.groupsearchfields | default(omit) }}"
+    homesrootdir: "{{ item.homesrootdir | default(omit) }}"
+    krbauthzdata: "{{ item.krbauthzdata | default(omit) }}"
+    maxusernamelength: "{{ item.maxusernamelength | default(omit) }}"
+    pwdexpadvnotify: "{{ item.pwdexpadvnotify | default(omit) }}"
+    searchrecordslimit: "{{ item.searchrecordslimit | default(omit) }}"
+    searchtimelimit: "{{ item.searchtimelimit | default(omit) }}"
+    selinuxusermaporder: "{{ item.selinuxusermaporder | default(omit) }}"
+    userauthtype: "{{ item.userauthtype | default(omit) }}"
+    userobjectclasses: "{{ item.userobjectclasses | default(omit) }}"
+    usersearchfields: "{{ item.usersearchfields | default(omit) }}"
+    # Connection settings
+    ipa_host: "{{ ipa_host }}"
+    ipa_user: "{{ ipaadmin_user }}"
+    ipa_pass: "{{ ipaadmin_pass }}"
+    validate_certs: "{{ ipa_validate_certs }}"
+  register: _ipa_command_config
+  with_items: "{{ ipa_configs }}"
+  failed_when: (_ipa_command_config.failed == true) and ("no modifications to be performed" not in _ipa_command_config.msg)
+  when: ipa_configs | default([]) | length>0

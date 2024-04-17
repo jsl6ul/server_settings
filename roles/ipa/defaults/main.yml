@@ -1,0 +1,96 @@
+---
+# Connection settings
+ipa_host: idm.example.com
+ipaadmin_user: admin
+ipaadmin_pass: secret
+# If set to false, the SSL certificates will not be validated.
+ipa_validate_certs: true
+
+# pw expiration in today + 365 days
+ipa_password_expiration: "{{ '%Y%m%d%H%M%S' | strftime( ansible_date_time.epoch|int + 31536000 ) }}"
+
+# ipa_users:
+#   - name: sbldap
+#     givenname: service
+#     sn: ldap bind account
+#     update_password: on_create
+#     krbpasswordexpiration: "{{ ipa_password_expiration }}"
+#     password: secret
+#
+#   - name: senroll
+#     givenname: service
+#     sn: ipa enrollment account
+#     update_password: on_create
+#     krbpasswordexpiration: "{{ ipa_password_expiration }}"
+#     password: secret
+#
+#   - name: jane
+#     givenname: jane
+#     sn: doe
+#     update_password: on_create
+#     password: secret
+#
+#   - name: john
+#     givenname: john
+#     sn: doe
+#     update_password: on_create
+#     password: secret
+
+# ipa_groups:
+#   - name: service
+#     description: Service accounts
+#     state: present
+#     user:
+#       - sbldap
+#       - senroll
+#
+#   - name: sysadmin
+#     description: Sysadmin
+#     state: present
+#     user:
+#       - jane
+#       - john
+
+# ipa_roles:
+#   - name: ipa_enrollment
+#     privilege:
+#       - Host Administrators
+#       - Host Enrollment
+#     user:
+#       - senroll
+
+# ipa_hostgroups:
+#   - name: allhosts
+#     host: "{{ groups['all'] }}"
+#
+#   - name: databases
+#     host:
+#       - db1.example.com
+#       - db2.example.com
+
+# ipa_hbacrules:
+#   - name: sysadmin
+#     description: "Sysadmin HBAC rules"
+#     state: present
+#     hostgroup:
+#       - allhosts
+#     usergroup:
+#       - sysadmin
+#     servicecategory: all
+
+# ipa_sudorules:
+#   - name: sysadmin
+#     description: "Sysadmin sudo rules"
+#     hostgroup:
+#       - allhosts
+#     usergroup:
+#       - sysadmin
+#     cmdcategory: all
+#     runasusercategory: all
+#     runasgroupcategory: all
+#     sudoopt:
+#       - "!authenticate"
+
+# ipa_configs:
+#   - loginshell: /usr/bin/bash
+#     pwdexpadvnotify: 7

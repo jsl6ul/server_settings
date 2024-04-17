@@ -1,0 +1,25 @@
+---
+- name: "Manage users"
+  ipa_user:
+    name: "{{ item.name }}"
+    sn: "{{ item.sn }}"
+    givenname: "{{ item.givenname }}"
+    displayname: "{{ item.displayname | default(omit) }}"
+    state: "{{ item.state | default(omit) }}"
+    password: "{{ item.password | default(omit) }}"
+    mail: "{{ item.mail | default(omit) }}"
+    loginshell: "{{ item.loginshell | default(omit) }}"
+    sshpubkey: "{{ item.sshpubkey | default(omit) }}"
+    update_password: "{{ item.update_password | default(omit) }}"
+    krbpasswordexpiration: "{{ item.krbpasswordexpiration | default(omit) }}"
+    # Connection settings
+    ipa_host: "{{ ipa_host }}"
+    ipa_user: "{{ ipaadmin_user }}"
+    ipa_pass: "{{ ipaadmin_pass }}"
+    validate_certs: "{{ ipa_validate_certs }}"
+  register: _ipa_command_user
+  with_items: "{{ ipa_users }}"
+  loop_control:
+    label: "{{ item.name }}"
+  failed_when: (_ipa_command_user.failed == true) and ("no modifications to be performed" not in _ipa_command_user.msg)
+  when: ipa_users | default([]) | length>0
