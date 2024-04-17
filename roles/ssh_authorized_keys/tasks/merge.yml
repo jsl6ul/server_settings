@@ -4,7 +4,7 @@
 - name: Include vars from group_vars/all and host_vars/ files
   include_vars:
     file: "{{ item }}"
-    name: "_mvsak_{{ item|basename|splitext|first }}"
+    name: "_mvsak_a_{{ item|basename|splitext|first }}"
   with_items:
     - "{{ inventory_dir }}/group_vars/all.yml"
     - "{{ inventory_dir }}/group_vars/all/ssh_authorized_keys.yml"
@@ -19,7 +19,7 @@
 - name: Include vars from group_vars/
   include_vars:
     file: "{{ inventory_dir }}/group_vars/{{ item }}.yml"
-    name: "_mvsak_{{ item|basename|splitext|first }}"
+    name: "_mvsak_b_{{ item|basename|splitext|first }}"
   loop: "{{ group_names }}"
   register: _reg_incl
   ignore_errors: true
