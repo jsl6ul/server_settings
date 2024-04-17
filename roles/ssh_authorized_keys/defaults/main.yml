@@ -1,5 +1,5 @@
 ---
 # ssh_authorized_keys:
-#   - { user: admin, comment: "Stefan Vu", state: present, key: 'ssh-rsa ...' }
+#   - { user: admin, comment: "Stefan Vu", state: present, key: "ssh-rsa ..." }
 #   - { user: admin, comment: "Paul Galindo", state: present, key: "ssh-rsa ..." }
 #   - { user: root, comment: "Mira Peck", state: present, key: "ssh-ed25519 ..." }
