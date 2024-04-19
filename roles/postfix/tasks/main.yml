@@ -1,0 +1,37 @@
+---
+- name: Install postfix
+  package:
+    name: postfix
+
+- name: Set postfix relay authentication
+  copy:
+    dest: /etc/postfix/postfix_relay_pass
+    content: "{{ postfix_relay_pass }}"
+    mode: 0600
+  when: postfix_relay_pass is defined
+  notify: Postfix postmap relay pass
+
+- name: Set postfix main.cf
+  lineinfile:
+    path: /etc/postfix/main.cf
+    backup: yes
+    regexp: "{{ item.re }}"
+    line: "{{ item.line }}"
+    state: "{{ item.state | default('present') }}"
+  with_items: "{{ postfix_main_conf }}"
+  when: postfix_main_conf is defined
+  notify: Restart postfix
+
+- name: Set /etc/aliases
+  ansible.builtin.blockinfile:
+    path: /etc/aliases
+    block: "{{ postfix_email_aliases }}"
+    marker: "### {mark} Ansible Managed Block - postfix_email_aliases ###"
+  when: postfix_email_aliases is defined
+  notify: New aliases
+
+- name: Set postfix service
+  service:
+    name: postfix
+    state: "{{ postfix_service_state }}"
+    enabled: "{{ postfix_service_enabled }}"

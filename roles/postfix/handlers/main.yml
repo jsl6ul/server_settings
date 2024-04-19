@@ -1,0 +1,9 @@
+---
+- name: Postfix postmap relay pass
+  command: postmap /etc/postfix/postfix_relay_pass
+
+- name: New aliases
+  command: newaliases
+
+- name: Restart postfix
+  service: name=postfix state=restarted
