@@ -1,9 +1,9 @@
 ---
 # firewalld should be started or stopped ?
-firewalld_state: stopped
+firewalld_service_state: stopped
 
 # firewalld should start on boot ?
-firewalld_enabled: false
+firewalld_service_enabled: false
 
 # LogDenied: all, unicast, broadcast, multicast or off
 firewalld_LogDenied: "off"
