@@ -1,6 +1,6 @@
 ---
-smartd_state: started
-smartd_enabled: true
+smartd_service_state: started
+smartd_service_enabled: true
 
 smartd_conf: |
   # DEVICESCAN (smartd scans for disks and monitors all it finds)

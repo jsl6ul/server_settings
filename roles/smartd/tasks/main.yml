@@ -15,5 +15,5 @@
 - name: Set smartd service
   service:
     name: smartd
-    state: "{{ smartd_state }}"
-    enabled: "{{ smartd_enabled }}"
+    state: "{{ smartd_service_state }}"
+    enabled: "{{ smartd_service_enabled }}"
