@@ -1,4 +1,10 @@
 ---
+# rsyslog should be started or stopped ?
+remote_syslog_rsyslog_service_state: started
+
+# rsyslog should start on boot ?
+remote_syslog_rsyslog_service_enabled: true
+
 # remote_syslog_server: 192.168.0.123
 remote_syslog_server_port: 514
 remote_syslog_server_protocol: tcp

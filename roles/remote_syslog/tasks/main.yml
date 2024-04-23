@@ -28,17 +28,8 @@
   notify: Restart rsyslog
   when: remote_syslog_server is defined and remote_syslog_server != ""
 
-- name: Enable / start rsyslog
+- name: Set rsyslog service
   ansible.builtin.service:
     name: rsyslog
-    state: started
-    enabled: true
-  ignore_errors: true
-  when: remote_syslog_server is defined and remote_syslog_server != ""
-
-- name: Disable / stop rsyslog
-  ansible.builtin.service:
-    name: rsyslog
-    enabled: false
-    state: stopped
-  when: remote_syslog_server is not defined or remote_syslog_server == ""
+    enabled: "{{ remote_syslog_rsyslog_service_enabled }}"
+    state: "{{ remote_syslog_rsyslog_service_state }}"
