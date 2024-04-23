@@ -3,7 +3,7 @@
 TMPFILE=/tmp/.trivy.report.$USER.$RANDOM.json
 
 function show_usage(){
-    echo "Usage: trivy-scan.sh (-i <image> | -f path | -r path) [-t https://trivy.example.com -k abc123] [-g graylog.example.com -p port]
+    echo "Usage: trivy-scan.sh (-i <image> | -f path | -r path) [-t https://trivy.example.com -k abc123] [-g graylog.example.com -p port] [-w duration]
 
 This script uses trivy, in client-server mode, to scan and report on HIGH & CRITICAL vulnerabilities.
 If defined, the report will be sent to a graylog server, otherwise the report will be printed to the standard output.
@@ -18,12 +18,16 @@ If defined, the report will be sent to a graylog server, otherwise the report wi
 -g : graylog server address
 -p : graylog port
 
+-w : scan timeout (default 5m0s)
+
 This script requires: jq, and netcat to send report to graylog.
 "
 }
 
+# default timeout
+TMOUT=5m0s
 
-while getopts "hi:f:r:g:p:t:k:" flag; do
+while getopts "hi:f:r:g:p:t:k:w:" flag; do
     case $flag in
         h)
             show_usage
@@ -52,6 +56,9 @@ while getopts "hi:f:r:g:p:t:k:" flag; do
             ;;
         p)
             GLPRT="$OPTARG"
+            ;;
+        w)
+            TMOUT="$OPTARG"
             ;;
         \?)
             # invalid option
@@ -99,9 +106,9 @@ fi
 
 # scan
 if [ "$TVSRV" == "" ]; then
-    trivy --severity HIGH,CRITICAL -f json --scanners vuln $MODE $TARGET > $TMPFILE
+    trivy --severity HIGH,CRITICAL -f json --scanners vuln --timeout $TMOUT $MODE $TARGET > $TMPFILE
 else
-    trivy --server $TVSRV --token $TVTKN --severity HIGH,CRITICAL -f json --scanners vuln $MODE $TARGET > $TMPFILE
+    trivy --server $TVSRV --token $TVTKN --severity HIGH,CRITICAL -f json --scanners vuln --timeout $TMOUT $MODE $TARGET > $TMPFILE
 fi
 
 if [ $? == 0 ]; then
