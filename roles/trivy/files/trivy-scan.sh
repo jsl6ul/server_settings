@@ -18,7 +18,7 @@ If defined, the report will be sent to a graylog server, otherwise the report wi
 -g : graylog server address
 -p : graylog port
 
--w : scan timeout (default 5m0s)
+-w : trivy scan timeout (default 5m0s)
 
 This script requires: jq, and netcat to send report to graylog.
 "
