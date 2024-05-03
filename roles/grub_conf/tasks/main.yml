@@ -1,0 +1,7 @@
+---
+- name: Set /etc/default/grub.d/grub_conf.cfg
+  ansible.builtin.copy:
+    dest: /etc/default/grub.d/grub_conf.cfg
+    content: "{{ grub_conf_default_file }}"
+  when: grub_conf_default_file is defined
+  notify: Update grub
