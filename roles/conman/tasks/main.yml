@@ -1,0 +1,63 @@
+---
+- name: Install required packages
+  ansible.builtin.package:
+    name:
+      - conman
+      - expect
+      - freeipmi-tools
+
+- name: Set /etc/conman.conf
+  ansible.builtin.copy:
+    dest: /etc/conman.conf
+    mode: 0640
+    owner: root
+    group: root
+    content: "{{ conman_conf_file }}"
+  when: conman_conf_file is defined
+  notify: Restart conman
+
+- name: Set /etc/default/conman.conf
+  ansible.builtin.copy:
+    dest: /etc/default/conman.conf
+    mode: 0644
+    owner: root
+    group: root
+    content: "{{ conman_sysconfig_file }}"
+  when: conman_sysconfig_file is defined
+  notify: Restart conman
+
+- name: Set /etc/conman.pswd
+  ansible.builtin.copy:
+    dest: /etc/conman.pswd
+    mode: 0640
+    owner: root
+    group: root
+    content: "{{ conman_password_db_file }}"
+  when: conman_password_db_file is defined
+  notify: Restart conman
+
+- name: Set /etc/logrotate.d/conman
+  ansible.builtin.copy:
+    dest: /etc/logrotate.d/conman
+    mode: 0644
+    owner: root
+    group: root
+    content: "{{ conman_logrotate_file }}"
+  when: conman_logrotate_file is defined
+
+- name: Set ~/.ssh/config
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_user_dir }}/.ssh/config"
+    block: "{{ conman_ssh_user_config_bif }}"
+    marker: "### {mark} Ansible Managed Block - conman_ssh_user_config_bif ###"
+    mode: 0640
+    create: true
+    state: "{{ conman_ssh_user_config_bif_state }}"
+  when: conman_ssh_user_config_bif is defined
+  notify: Restart conman
+
+- name: Set conman service
+  ansible.builtin.service:
+    name: conman
+    state: "{{ conman_service_state }}"
+    enabled: "{{ conman_service_enabled }}"

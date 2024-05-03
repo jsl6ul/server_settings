@@ -1,0 +1,56 @@
+---
+conman_service_enabled: true
+conman_service_state: started
+
+# ConMan daemon configuration file, /etc/conman.conf
+conman_conf_file: |
+  server loopback=on
+  server timestamp=30m
+  server logdir="/var/log/conman"
+  server logfile="conman.log"
+  global log="%N.log"
+  global logopts="sanitize,timestamp"
+  console name="localhost" dev="/dev/tty0"
+  #console name="sunserver" dev="/usr/lib/conman/exec/sun-ilom.exp sunserver.example.com root"
+  #console name="rmm3" dev="/usr/lib/conman/exec/ipmiconsole.exp rmm3server.example.com root"
+
+# conman.sysconfig, /etc/default/conman
+# conman_sysconfig_file: |
+#   DAEMON_ARGS="-m"
+
+# password_db, /etc/conman.pwdb
+# The file format is: <host-regex> : <user> : <pswd>
+# conman_password_db_file: |
+#   192.168.0.12 : root : secret
+
+# logrotate file
+conman_logrotate_file: |
+  /var/log/conman/* {
+    compress
+    missingok
+    nocopytruncate
+    nocreate
+    nodelaycompress
+    nomail
+    notifempty
+    olddir /var/log/conman.old/
+    rotate 30
+    sharedscripts
+    size=5M
+    daily
+    postrotate
+      /usr/bin/killall -HUP conmand
+    endscript
+  }
+
+# A Block-In-File for $HOME/.ssh/config
+# conman_ssh_user_config_bif: |
+#   Host old-server-1
+#     Hostname 192.168.0.123
+#     KexAlgorithms +diffie-hellman-group1-sha1
+#     HostKeyAlgorithms +ssh-dss
+#     User root
+#     StrictHostKeyChecking no
+
+# State 'present|absent' for the '.ssh/config' blockinfile
+conman_ssh_user_config_bif_state: present
