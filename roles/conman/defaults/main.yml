@@ -1,0 +1,57 @@
+---
+conman_service_enabled: true
+conman_service_state: started
+
+# ConMan daemon configuration file: /etc/conman.conf
+conman_file_conf: |
+  server loopback=on
+  server timestamp=30m
+  server logdir="/var/log/conman"
+  server logfile="conman.log"
+  global log="%N.log"
+  global logopts="sanitize,timestamp"
+  #console name="localhost" dev="/dev/tty0"
+  #console name="sunserver" dev="/usr/lib/conman/exec/sun-ilom.exp sunserver.example.com root"
+  #console name="rmm3" dev="/usr/lib/conman/exec/ipmiconsole.exp rmm3server.example.com root"
+
+# conman sysconfig file: /etc/default/conman
+# conman_file_sysconfig: |
+#   DAEMON_ARGS="-m"
+
+# password db file: /etc/conman.pwdb
+# The file format is: <host-regex> : <user> : <pswd>
+# conman_file_password_db: |
+#   192.168.0.12 : root : secret
+
+# logrotate file: /etc/logrotate.d/conman
+conman_file_logrotate: |
+  /var/log/conman/* {
+    compress
+    missingok
+    nocopytruncate
+    nocreate
+    nodelaycompress
+    nomail
+    notifempty
+    olddir /var/log/conman.old/
+    createolddir 0700 root root
+    rotate 30
+    sharedscripts
+    size=5M
+    daily
+    postrotate
+      /usr/bin/killall -HUP conmand
+    endscript
+  }
+
+# A 'Block-In-File' for: ansible_user_dir/.ssh/config
+# conman_bif_ssh_user_config: |
+#   Host old-server-1
+#     Hostname 192.168.0.123
+#     KexAlgorithms +diffie-hellman-group1-sha1
+#     HostKeyAlgorithms +ssh-dss
+#     User root
+#     StrictHostKeyChecking no
+
+# State 'present|absent' for the blockinfile in: 'ansible_user_dir/.ssh/config'
+conman_bif_state_ssh_user_config: present
