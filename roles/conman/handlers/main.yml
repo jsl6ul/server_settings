@@ -1,0 +1,6 @@
+---
+- name: Restart conman
+  ansible.builtin.service:
+    name: conman
+    state: restarted
+  when: conman_service_enabled
