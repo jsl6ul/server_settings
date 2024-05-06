@@ -1,4 +1,0 @@
----
-# /etc/default/grub.d/grub_conf.cfg
-# grub_conf_default_file: |
-#   GRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT console=tty0 console=ttyS0,115200"

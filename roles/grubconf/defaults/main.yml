@@ -1,0 +1,9 @@
+---
+# destination file
+grubconf_path_default_conf: /etc/default/grub.d/grubconf.cfg
+
+# block-in-file
+# grubconf_bif_default_conf: |
+#   GRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT console=tty0 console=ttyS0,115200"
+
+grubconf_bifstate_default_conf: present

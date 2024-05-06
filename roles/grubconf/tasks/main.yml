@@ -1,0 +1,11 @@
+---
+- name: Set grubconf_file_default_conf
+  ansible.builtin.blockinfile:
+    path: "{{ grubconf_path_default_conf }}"
+    block: "{{ grubconf_bif_default_conf }}"
+    marker: "### {mark} Ansible Managed Block - grubconf_bif_default_conf ###"
+    mode: 0644
+    create: true
+    state: "{{ grubconf_bifstate_default_conf }}"
+  when: grubconf_bif_default_conf is defined
+  notify: Update grub
