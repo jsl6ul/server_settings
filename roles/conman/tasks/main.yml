@@ -48,12 +48,12 @@
 - name: Set ~/.ssh/config
   ansible.builtin.blockinfile:
     path: "{{ ansible_user_dir }}/.ssh/config"
-    block: "{{ conman_ssh_user_config_bif }}"
-    marker: "### {mark} Ansible Managed Block - conman_ssh_user_config_bif ###"
+    block: "{{ conman_bif_ssh_user_config }}"
+    marker: "### {mark} Ansible Managed Block - conman_bif_ssh_user_config ###"
     mode: 0600
     create: true
-    state: "{{ conman_ssh_user_config_bif_state }}"
-  when: conman_ssh_user_config_bif is defined
+    state: "{{ conman_bif_state_ssh_user_config }}"
+  when: conman_bif_state_ssh_user_config is defined
   notify: Restart conman
 
 - name: Set conman service
