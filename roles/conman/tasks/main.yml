@@ -50,7 +50,7 @@
     path: "{{ ansible_user_dir }}/.ssh/config"
     block: "{{ conman_ssh_user_config_bif }}"
     marker: "### {mark} Ansible Managed Block - conman_ssh_user_config_bif ###"
-    mode: 0640
+    mode: 0600
     create: true
     state: "{{ conman_ssh_user_config_bif_state }}"
   when: conman_ssh_user_config_bif is defined
