@@ -1,5 +1,5 @@
 ---
-- name: Set grubconf_file_default_conf
+- name: "Set {{ grubconf_path_default_conf }}"
   ansible.builtin.blockinfile:
     path: "{{ grubconf_path_default_conf }}"
     block: "{{ grubconf_bif_default_conf }}"
