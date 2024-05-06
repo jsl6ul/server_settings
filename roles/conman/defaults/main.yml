@@ -3,7 +3,7 @@ conman_service_enabled: true
 conman_service_state: started
 
 # ConMan daemon configuration file: /etc/conman.conf
-conman_conf_file: |
+conman_file_conf: |
   server loopback=on
   server timestamp=30m
   server logdir="/var/log/conman"
@@ -14,17 +14,17 @@ conman_conf_file: |
   #console name="sunserver" dev="/usr/lib/conman/exec/sun-ilom.exp sunserver.example.com root"
   #console name="rmm3" dev="/usr/lib/conman/exec/ipmiconsole.exp rmm3server.example.com root"
 
-# conman.sysconfig: /etc/default/conman
-# conman_sysconfig_file: |
+# conman sysconfig file: /etc/default/conman
+# conman_file_sysconfig: |
 #   DAEMON_ARGS="-m"
 
-# password_db: /etc/conman.pwdb
+# password db file: /etc/conman.pwdb
 # The file format is: <host-regex> : <user> : <pswd>
-# conman_password_db_file: |
+# conman_file_password_db: |
 #   192.168.0.12 : root : secret
 
 # logrotate file: /etc/logrotate.d/conman
-conman_logrotate_file: |
+conman_file_logrotate: |
   /var/log/conman/* {
     compress
     missingok

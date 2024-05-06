@@ -12,8 +12,8 @@
     mode: 0640
     owner: root
     group: root
-    content: "{{ conman_conf_file }}"
-  when: conman_conf_file is defined
+    content: "{{ conman_file_conf }}"
+  when: conman_file_conf is defined
   notify: Restart conman
 
 - name: Set /etc/default/conman.conf
@@ -22,8 +22,8 @@
     mode: 0644
     owner: root
     group: root
-    content: "{{ conman_sysconfig_file }}"
-  when: conman_sysconfig_file is defined
+    content: "{{ conman_file_sysconfig }}"
+  when: conman_file_sysconfig is defined
   notify: Restart conman
 
 - name: Set /etc/conman.pswd
@@ -32,8 +32,8 @@
     mode: 0640
     owner: root
     group: root
-    content: "{{ conman_password_db_file }}"
-  when: conman_password_db_file is defined
+    content: "{{ conman_file_password_db }}"
+  when: conman_file_password_db is defined
   notify: Restart conman
 
 - name: Set /etc/logrotate.d/conman
@@ -42,8 +42,8 @@
     mode: 0644
     owner: root
     group: root
-    content: "{{ conman_logrotate_file }}"
-  when: conman_logrotate_file is defined
+    content: "{{ conman_file_logrotate }}"
+  when: conman_file_logrotate is defined
 
 - name: Set ~/.ssh/config
   ansible.builtin.blockinfile:
