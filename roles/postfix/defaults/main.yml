@@ -1,0 +1,73 @@
+---
+# postfix service options
+postfix_service_enabled: true
+postfix_service_state: started
+
+# postfix relay server parameters
+# postfix_relay_server_name: "mail.example.com"
+# postfix_relay_server_port: "465"
+# postfix_relay_auth_username: "me@example.com"
+# postfix_relay_auth_password: secret
+
+# Configure /etc/postfix/main.cf with a 'LineInFile' task.
+# 'key', 'value' and 'state'
+# postfix_lif_main_conf:
+#   - key: "inet_interfaces"
+#     value: "all"
+#   - key: "inet_protocols"
+#     value: "all"
+#   - key: "maillog_file"
+#     value: "/var/log/maillog"
+#     state: "absent"
+#   - key: "mydestination"
+#     value: "localhost, $myhostname, $myhostname.$mydomain"
+#   - key: "mydomain"
+#     value: "{{ ansible_domain }}"
+#   - key: "myhostname"
+#     value: "{{ ansible_hostname }}"
+#   - key: "mynetworks"
+#     value: "127.0.0.0/8 192.168.0.0/16 172.16.0.0/12 10.226.0.0/16"
+#   - key: "myorigin"
+#     value: "$myhostname.$mydomain"
+#   - key: "sender_canonical_maps"
+#     value: "hash:/etc/postfix/sender_canonical"
+#   - key: "transport_maps"
+#     value: "hash:/etc/postfix/transport"
+#   - key: "relayhost"
+#     value: "[{{ postfix_relay_server_name}}]:{{ postfix_relay_server_port }}"
+#   - key: "smtp_sasl_auth_enable"
+#     value: "yes"
+#   - key: "smtp_sasl_password_maps"
+#     value: "hash:/etc/postfix/postfix_relay_pass"
+#   - key: "smtp_sasl_security_options"
+#     value: "noanonymous"
+#   - key: "smtp_tls_security_level"
+#     value: "encrypt"
+#   - key: "smtp_tls_wrappermode"
+#     value: "yes"
+#   - key: "smtp_use_tls"
+#     value: "no"
+#   - key: "smtpd_tls_security_level"
+#     value: "none"
+
+# Create a backup file of /etc/postfix/main.cf
+postfix_backup_main_conf: false
+
+# A 'BlockInFile' inserted in /etc/aliases
+# postfix_bif_aliases: |
+#   root: me@example.com
+
+# State for 'postfix_bif_aliases', present|absent
+postfix_bifstate_aliases: present
+
+# postfix transport file, /etc/postfix/transport
+# postfix_file_transport: |
+#   my.domain    :
+#   .my.domain   :
+#   *            smtp:outbound-relay.my.domain
+postfix_file_transport: ""
+
+# postfix sender canonical file, /etc/postfix/sender_canonical
+# postfix_file_sender_canonical: |
+#   wietse        Wietse.Venema
+postfix_file_sender_canonical: ""
