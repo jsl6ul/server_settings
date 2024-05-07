@@ -1,37 +1,56 @@
 ---
 - name: Install postfix
-  package:
+  ansible.builtin.package:
     name: postfix
 
 - name: Set postfix relay authentication
-  copy:
+  ansible.builtin.copy:
     dest: /etc/postfix/postfix_relay_pass
-    content: "{{ postfix_relay_pass }}"
+    content: "[{{ postfix_relay_server_name }}]:{{ postfix_relay_server_port }} {{ postfix_relay_auth_username }}:{{ postfix_relay_auth_password }}"
     mode: 0600
-  when: postfix_relay_pass is defined
+  when:
+    - postfix_relay_server_name is defined
+    - postfix_relay_server_port is defined
+    - postfix_relay_auth_username is defined
+    - postfix_relay_auth_password is defined
   notify: Postfix postmap relay pass
 
+- name: Set /etc/postfix/transport
+  ansible.builtin.copy:
+    dest: /etc/postfix/transport
+    content: "{{ postfix_file_transport }}"
+    mode: 0644
+  notify: Postfix postmap transport
+
+- name: Set /etc/postfix/sender_canonical
+  ansible.builtin.copy:
+    dest: /etc/postfix/sender_canonical
+    content: "{{ postfix_file_sender_canonical }}"
+    mode: 0644
+  notify: Postfix postmap sender canonical
+
 - name: Set postfix main.cf
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/postfix/main.cf
-    backup: yes
-    regexp: "{{ item.re }}"
-    line: "{{ item.line }}"
+    backup: "{{ postfix_backup_main_conf }}"
+    regexp: "^{{ item.key }}.*"
+    line: "{{ item.key }} = {{ item.value }}"
     state: "{{ item.state | default('present') }}"
-  with_items: "{{ postfix_main_conf }}"
-  when: postfix_main_conf is defined
+  with_items: "{{ postfix_lif_main_conf }}"
+  when: postfix_lif_main_conf is defined
   notify: Restart postfix
 
 - name: Set /etc/aliases
   ansible.builtin.blockinfile:
     path: /etc/aliases
-    block: "{{ postfix_email_aliases }}"
-    marker: "### {mark} Ansible Managed Block - postfix_email_aliases ###"
-  when: postfix_email_aliases is defined
+    block: "{{ postfix_bif_aliases }}"
+    marker: "### {mark} Ansible Managed Block - postfix_bif_aliases ###"
+    state: "{{ postfix_bifstate_aliases }}"
+  when: postfix_bif_aliases is defined
   notify: New aliases
 
 - name: Set postfix service
-  service:
+  ansible.builtin.service:
     name: postfix
     state: "{{ postfix_service_state }}"
     enabled: "{{ postfix_service_enabled }}"
