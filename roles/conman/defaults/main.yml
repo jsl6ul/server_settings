@@ -32,15 +32,13 @@ conman_file_logrotate: |
     nocreate
     nodelaycompress
     nomail
-    notifempty
     olddir /var/log/conman.old/
     createolddir 0700 root root
     rotate 30
     sharedscripts
-    size=5M
     daily
     postrotate
-      /usr/bin/killall -HUP conmand
+      /usr/bin/systemctl restart conman
     endscript
   }
 
