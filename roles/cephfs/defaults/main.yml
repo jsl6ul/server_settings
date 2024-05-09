@@ -1,0 +1,20 @@
+---
+cephfs_packages:
+  - ceph-common
+
+# Ceph mounts
+# cephfs_mounts:
+#   - name: /opt/cephfs_a
+#     src: 192.168.0.11:6789,192.168.0.12:6789,192.168.0.13:6789:/
+#     opts: fs=cephfs_a,name=fs_username,secretfile=/etc/ceph/secret1,_netdev,noatime
+#   - name: /opt/cephfs_b
+#     src: 192.168.0.11:6789,192.168.0.12:6789,192.168.0.13:6789:/
+#     opts: fs=cephfs_b,name=fs_username,secretfile=/path/to/secret2,_netdev,noatime
+#     state: absent
+
+# Ceph secrets
+# cephfs_secrets:
+#  - filename: /etc/ceph/secret1
+#    key: secret1
+#  - filename: /path/to/secret2
+#    key: secret2

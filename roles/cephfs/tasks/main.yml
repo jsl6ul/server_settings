@@ -1,0 +1,32 @@
+---
+- name: Install required packages
+  ansible.builtin.package:
+    name: "{{ cephfs_packages }}"
+
+- name: Create secret file
+  ansible.builtin.copy:
+    dest: "{{ item.filename }}"
+    content: "{{ item.key }}"
+    mode: 0600
+  with_items: "{{ cephfs_secrets }}"
+  loop_control:
+    label: "{{ item.filename }}"
+  when: cephfs_secrets is defined
+
+- name: Create mountpoint directory
+  ansible.builtin.file:
+    path: "{{ item.name }}"
+    state: directory
+    mode: 0755
+  with_items: "{{ cephfs_mounts }}"
+  when: cephfs_mounts is defined
+
+- name: Mount file system
+  ansible.posix.mount:
+    name: "{{ item.name }}"
+    src: "{{ item.src }}"
+    fstype: ceph
+    opts: "{{ item.opts | default(omit) }}"
+    state: "{{ item.state | default('mounted') }}"
+  with_items: "{{ cephfs_mounts }}"
+  when: cephfs_mounts is defined
