@@ -8,7 +8,9 @@ conman_file_conf: |
   server timestamp=30m
   server logdir="/var/log/conman"
   server logfile="conman.log"
+  #server logfile="conman-%Y%m%d.log"
   global log="%N.log"
+  #global log="%N-%Y%m%d.log"
   global logopts="sanitize,timestamp"
   #console name="localhost" dev="/dev/tty0"
   #console name="sunserver" dev="/usr/lib/conman/exec/sun-ilom.exp sunserver.example.com root"
@@ -24,25 +26,23 @@ conman_file_conf: |
 #   192.168.0.12 : root : secret
 
 # logrotate file: /etc/logrotate.d/conman
-conman_file_logrotate: |
-  /var/log/conman/* {
-    compress
-    missingok
-    nocopytruncate
-    nocreate
-    nodelaycompress
-    nomail
-    notifempty
-    olddir /var/log/conman.old/
-    createolddir 0700 root root
-    rotate 30
-    sharedscripts
-    size=5M
-    daily
-    postrotate
-      /usr/bin/killall -HUP conmand
-    endscript
-  }
+# conman_file_logrotate: |
+#   /var/log/conman/* {
+#     daily
+#     rotate 30
+#     compress
+#     missingok
+#     nocopytruncate
+#     nocreate
+#     nodelaycompress
+#     nomail
+#     olddir /var/log/conman.old/
+#     createolddir 0700 root root
+#     sharedscripts
+#     postrotate
+#       /usr/bin/systemctl restart conman
+#     endscript
+#   }
 
 # A 'Block-In-File' for: ansible_user_dir/.ssh/config
 # conman_bif_ssh_user_config: |

@@ -45,6 +45,12 @@
     content: "{{ conman_file_logrotate }}"
   when: conman_file_logrotate is defined
 
+- name: Remove /etc/logrotate.d/conman
+  ansible.builtin.file:
+    dest: /etc/logrotate.d/conman
+    state: absent
+  when: conman_file_logrotate is undefined
+
 - name: Set ~/.ssh/config
   ansible.builtin.blockinfile:
     path: "{{ ansible_user_dir }}/.ssh/config"
