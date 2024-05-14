@@ -1,0 +1,24 @@
+---
+duomfa_repository_url: "deb [signed-by=/etc/apt/trusted.gpg.d/DUO-GPG-PUBLIC-KEY.asc] https://pkg.duosecurity.com/Debian {{ ansible_distribution_release }} main"
+duomfa_repository_key_url: "https://duo.com/DUO-GPG-PUBLIC-KEY.asc"
+
+# Duo Configuration Options for /etc/duo/login_duo.conf & /etc/duo/pam_duo.conf
+# duomfa_duo_conf:
+#   - option: ikey
+#     value: INTEGRATION_KEY
+#   - option: skey
+#     value: SECRET_KEY
+#   - option: host
+#     value: API_HOSTNAME
+
+# Duo Configuration for /etc/ssh/sshd_config
+# duomfa_sshd_config:
+#   - option: ForceCommand
+#     value: /usr/sbin/login_duo
+#   - option: PermitTunnel
+#     value: "no"
+#   - option: AllowTcpForwarding
+#     value: "no"
+
+# Backup /etc/ssh/sshd_config ?
+duomfa_sshd_config_backup: true
