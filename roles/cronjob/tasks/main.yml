@@ -9,7 +9,7 @@
     day: "{{ item.day | default('*') }}"
     env: "{{ item.env | default('no') }}"
     hour: "{{ item.hour | default('*') }}"
-    job: "{{ item.job }}"
+    job: "{% if cronjob_error_notification is defined and item.env is undefined %}{{ item.job +' '+ cronjob_error_notification +' '+ item.name }}{% else %}{{ item.job }}{% endif %}"
     minute: "{{ item.minute | default('*') }}"
     name: "{{ item.name }}"
     state: "{{ item.state | default('present') }}"
