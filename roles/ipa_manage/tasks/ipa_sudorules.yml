@@ -15,12 +15,12 @@
     runasgroupcategory: "{{ item.runasgroupcategory | default(omit) }}"
     sudoopt: "{{ item.sudoopt | default(omit) }}"
     # Connection settings
-    ipa_host: "{{ ipa_host }}"
-    ipa_user: "{{ ipaadmin_user }}"
-    ipa_pass: "{{ ipaadmin_pass }}"
-    validate_certs: "{{ ipa_validate_certs }}"
+    ipa_host: "{{ ipa_manage_host }}"
+    ipa_user: "{{ ipa_manage_user }}"
+    ipa_pass: "{{ ipa_manage_pass }}"
+    validate_certs: "{{ ipa_manage_validate_certs }}"
   register: _ipa_command_sudo
-  with_items: "{{ ipa_sudorules }}"
+  with_items: "{{ ipa_manage_sudorules }}"
   loop_control:
     label: "{{ item.name }}"
   failed_when: (_ipa_command_sudo.failed == true) and ("no modifications to be performed" not in _ipa_command_sudo.msg)

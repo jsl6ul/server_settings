@@ -6,11 +6,11 @@
     user: "{{ item.user }}"
     state: "{{ item.state | default(omit) }}"
     # Connection settings
-    ipa_host: "{{ ipa_host }}"
-    ipa_user: "{{ ipaadmin_user }}"
-    ipa_pass: "{{ ipaadmin_pass }}"
-    validate_certs: "{{ ipa_validate_certs }}"
-  with_items: "{{ ipa_roles }}"
+    ipa_host: "{{ ipa_manage_host }}"
+    ipa_user: "{{ ipa_manage_user }}"
+    ipa_pass: "{{ ipa_manage_pass }}"
+    validate_certs: "{{ ipa_manage_validate_certs }}"
+  with_items: "{{ ipa_manage_roles }}"
   loop_control:
     label: "{{ item.name }}"
   when: ipa_roles | default([]) | length>0
