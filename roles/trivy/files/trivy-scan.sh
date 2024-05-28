@@ -112,13 +112,17 @@ else
 fi
 
 if [ $? == 0 ]; then
-    if [ "$GLSRV" != "" ]; then
-        # send to graylog
-        # the last jq replaces the array of elements with several elements (one per line)
-        cat $TMPFILE |jq -c '.Results'|jq -c '.[].Vulnerabilities' |jq -c --arg TG "$TARGET" --arg MD "$MODE" --arg HN "$HOSTNAME" 'map({Target:$TG, Type:$MD, Host:$HN, CVE:.VulnerabilityID, PkgName:.PkgName, PkgInstVer:.InstalledVersion, PkgFixVer:.FixedVersion, Status:.Status, URL:.PrimaryURL, Title:.Title, Severity:.Severity, PubDate:.PublishedDate, LastUpdate:.LastModifiedDate})' | jq -c '.[]' | nc -q 1 $GLSRV $GLPRT
-    else
-        # print to stdout
-        cat $TMPFILE |jq '.Results'|jq '.[].Vulnerabilities' |jq --arg TG "$TARGET" --arg MD "$MODE" --arg HN "$HOSTNAME" 'map({Target:$TG, Type:$MD, Host:$HN, CVE:.VulnerabilityID, PkgName:.PkgName, PkgInstVer:.InstalledVersion, PkgFixVer:.FixedVersion, Status:.Status, URL:.PrimaryURL, Title:.Title, Severity:.Severity, PubDate:.PublishedDate, LastUpdate:.LastModifiedDate})'
+    json_results=`cat $TMPFILE|jq '.Results'`
+    echo "$json_results"|grep -q Vulnerabilities
+    if [ $? == 0 ]; then
+        if [ "$GLSRV" != "" ]; then
+            # send to graylog
+            # the last jq replaces the array of elements with several elements (one per line)
+            echo "$json_results"|jq -c '.[].Vulnerabilities' |jq -c --arg TG "$TARGET" --arg MD "$MODE" --arg HN "$HOSTNAME" 'map({Target:$TG, Type:$MD, Host:$HN, CVE:.VulnerabilityID, PkgName:.PkgName, PkgInstVer:.InstalledVersion, PkgFixVer:.FixedVersion, Status:.Status, URL:.PrimaryURL, Title:.Title, Severity:.Severity, PubDate:.PublishedDate, LastUpdate:.LastModifiedDate})' | jq -c '.[]' | nc -q 1 $GLSRV $GLPRT
+        else
+            # print to stdout
+            echo "$json_results"|jq '.[].Vulnerabilities' |jq --arg TG "$TARGET" --arg MD "$MODE" --arg HN "$HOSTNAME" 'map({Target:$TG, Type:$MD, Host:$HN, CVE:.VulnerabilityID, PkgName:.PkgName, PkgInstVer:.InstalledVersion, PkgFixVer:.FixedVersion, Status:.Status, URL:.PrimaryURL, Title:.Title, Severity:.Severity, PubDate:.PublishedDate, LastUpdate:.LastModifiedDate})'
+        fi
     fi
 fi
 
