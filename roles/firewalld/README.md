@@ -6,6 +6,15 @@ This role does not use the usual firewalld zones. All rules are placed
 in the public zone, and restrictions are based on the source address 
 and destination port.
 
+# ICMP messages
+
+There are two approaches to managing ICMP rules: globally for the zone, 
+using `firewalld_icmp_block` and `firewalld_icmp_block_inversion`, 
+or by source address, using `firewalld_rules`.
+
+Take a look at `defaults/main.yml` for some examples.
+
+https://firewalld.org/documentation/zone/options.html
 
 # Merging firewalld_rules
 
