@@ -17,3 +17,5 @@
     weekday: "{{ item.weekday | default('*') }}"
   with_items: "{{ cronjob_entries }}"
   when: cronjob_entries is defined
+  loop_control:
+    label: "{{ item.name }}"
