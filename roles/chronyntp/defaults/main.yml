@@ -1,7 +1,9 @@
 ---
-chronyntp_service_name: "{{ 'chronyd' if ansible_os_family == 'RedHat' else 'chrony' }}"
 chronyntp_service_state: started
 chronyntp_service_enabled: true
+
+chronyntp_service_name: "{{ 'chronyd' if ansible_os_family == 'RedHat' else 'chrony' }}"
+chronyntp_group: "{{ 'chrony' if ansible_os_family == 'RedHat' else '_chrony' }}"
 
 # Command-line options for chronyd
 chronyntp_command_line_options: "-F 1 -f /etc/chrony.conf"
