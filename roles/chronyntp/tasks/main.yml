@@ -1,0 +1,25 @@
+---
+- name: Install chrony
+  ansible.builtin.package:
+    name: chrony
+
+- name: Include distribution tasks
+  ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
+
+- name: Copy chrony configuration file
+  ansible.builtin.copy:
+    dest: /etc/chrony.conf
+    content: "{{ chronyntp_conf }}"
+  notify: Restart chrony
+
+- name: Copy chrony keys file
+  ansible.builtin.copy:
+    dest: /etc/chrony.keys
+    content: "{{ chronyntp_keys }}"
+  notify: Restart chrony
+
+- name: Set chrony service
+  ansible.builtin.service:
+    name: "{{ chronyntp_service_name }}"
+    state: "{{ chronyntp_service_state }}"
+    enabled: "{{ chronyntp_service_enabled }}"

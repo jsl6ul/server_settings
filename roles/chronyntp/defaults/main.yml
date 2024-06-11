@@ -1,0 +1,46 @@
+---
+chronyntp_service_name: "{{ 'chronyd' if ansible_os_family == 'RedHat' else 'chrony' }}"
+chronyntp_service_state: started
+chronyntp_service_enabled: true
+
+# Command-line options for chronyd
+chronyntp_command_line_options: "-F 1 -f /etc/chrony.conf"
+
+# /etc/chrony.conf
+chronyntp_conf: |
+  # Welcome to the chrony configuration file.
+  # See chrony.conf(5) for more information about usable directives.
+  pool north-america.pool.ntp.org
+
+  # Use NTP servers from DHCP.
+  sourcedir /run/chrony-dhcp
+
+  # Record the rate at which the system clock gains/losses time.
+  driftfile /var/lib/chrony/drift
+
+  # Allow the system clock to be stepped in the first three updates
+  # if its offset is larger than 1 second.
+  makestep 1.0 3
+
+  # Enable kernel synchronization of the real-time clock (RTC).
+  rtcsync
+
+  # Allow NTP client access from local network.
+  #allow 192.168.0.0/16
+
+  # Specify file containing keys for NTP authentication.
+  keyfile /etc/chrony.keys
+
+  # Save NTS keys and cookies.
+  ntsdumpdir /var/lib/chrony
+
+  # Get TAI-UTC offset and leap seconds from the system tz database.
+  leapsectz right/UTC
+
+# /etc/chrony.keys
+chronyntp_keys: |
+  # This file is solely used for NTP authentication with symmetric keys
+  # as defined by RFC 1305 and RFC 5905.
+  #
+  # A list of supported hash functions and output encoding is available by
+  # consulting the "keyfile" directive in the chrony.conf(5) man page.

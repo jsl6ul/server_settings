@@ -1,0 +1,7 @@
+---
+- name: Set redhat command line options
+  ansible.builtin.lineinfile:
+    path: /etc/sysconfig/chronyd
+    regexp: ^OPTIONS=.*
+    line: "OPTIONS=\"{{ chronyntp_command_line_options }}\""
+  notify: Restart chrony
