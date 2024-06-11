@@ -1,0 +1,7 @@
+---
+- name: Set debian command line options
+  ansible.builtin.lineinfile:
+    path: /etc/default/chrony
+    regexp: ^DAEMON_OPTS=.*
+    line: "DAEMON_OPTS=\"{{ chronyntp_command_line_options }}\""
+  notify: Restart chrony
