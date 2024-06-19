@@ -3,5 +3,5 @@
   ansible.builtin.lineinfile:
     path: /etc/default/chrony
     regexp: ^DAEMON_OPTS=.*
-    line: "DAEMON_OPTS=\"{{ chronyntp_command_line_options }}\""
+    line: DAEMON_OPTS="{{ chronyntp_command_line_options }}"
   notify: Restart chrony

@@ -1,6 +1,6 @@
 ---
-- name: "Manage roles"
-  ipa_role:
+- name: Manage roles
+  community.general.ipa_role:
     name: "{{ item.name }}"
     privilege: "{{ item.privilege }}"
     user: "{{ item.user }}"

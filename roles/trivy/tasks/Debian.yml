@@ -1,6 +1,6 @@
 ---
 - name: Install required deb packages
-  package:
+  ansible.builtin.package:
     name:
       - curl
       - gnupg
@@ -8,12 +8,14 @@
       - netcat-traditional
 
 - name: Install repository key
-  shell: curl https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor > /usr/share/keyrings/trivy.gpg
+  ansible.builtin.shell:
+    cmd: set -o pipefail && curl https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor > /usr/share/keyrings/trivy.gpg
+    executable: /bin/bash
   args:
     creates: /usr/share/keyrings/trivy.gpg
 
 - name: Add trivy repository
-  copy:
+  ansible.builtin.copy:
     dest: /etc/apt/sources.list.d/trivy.list
     content: |
       deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb {{ ansible_distribution_release }} main

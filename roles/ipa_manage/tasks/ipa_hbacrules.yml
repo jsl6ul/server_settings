@@ -1,6 +1,6 @@
 ---
-- name: "Manage HBAC rules"
-  ipa_hbacrule:
+- name: Manage HBAC rules
+  community.general.ipa_hbacrule:
     name: "{{ item.name }}"
     description: "{{ item.description }}"
     host: "{{ item.host | default(omit) }}"

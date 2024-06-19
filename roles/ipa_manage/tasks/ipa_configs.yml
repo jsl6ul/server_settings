@@ -1,6 +1,6 @@
 ---
-- name: "Manage config"
-  ipa_config:
+- name: Manage config
+  community.general.ipa_config:
     configstring: "{{ item.configstring | default(omit) }}"
     emaildomain: "{{ item.emaildomain | default(omit) }}"
     loginshell: "{{ item.loginshell | default(omit) }}"

@@ -1,15 +1,15 @@
 ---
 - name: Stop firewalld
-  service:
+  ansible.builtin.service:
     name: firewalld
     state: stopped
 
 - name: Start firewalld
-  service:
+  ansible.builtin.service:
     name: firewalld
     state: started
 
 - name: Restart firewalld
-  service:
+  ansible.builtin.service:
     name: firewalld
     state: restarted

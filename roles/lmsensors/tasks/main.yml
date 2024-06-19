@@ -1,14 +1,14 @@
 ---
 - name: Include OS vars
-  include_vars: "{{ ansible_os_family }}.yml"
+  ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
   tags: always
 
 - name: Install lm sensors
-  package:
+  ansible.builtin.package:
     name: "{{ lmsensors_package }}"
   register: _install_sensors
 
-- name: setup lm sensors
-  command: "sensors-detect --auto"
+- name: Setup lm sensors
+  ansible.builtin.command: sensors-detect --auto
   changed_when: false
   when: _install_sensors.changed

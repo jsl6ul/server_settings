@@ -1,6 +1,6 @@
 ---
-- name: "Manage groups"
-  ipa_group:
+- name: Manage groups
+  community.general.ipa_group:
     name: "{{ item.name }}"
     description: "{{ item.description | default(omit) }}"
     state: "{{ item.state | default(omit) }}"

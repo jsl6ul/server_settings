@@ -6,11 +6,11 @@ firewalld_service_state: stopped
 firewalld_service_enabled: false
 
 # LogDenied: all, unicast, broadcast, multicast or off
-firewalld_LogDenied: "off"
+firewalld_log_denied: "off"
 
 # Disabled zone drifting for security reasons.
 # https://firewalld.org/2020/01/allowzonedrifting
-firewalld_AllowZoneDrifting: "no"
+firewalld_allow_zone_drifting: "no"
 
 # Zone target, "ACCEPT|%%REJECT%%|DROP"
 # (Default behavior for every packet not matching any rule.)
@@ -36,7 +36,7 @@ firewalld_zone_target: "%%REJECT%%"
 #       - 192.168.0.23/32
 #     ports:
 #       - 9100/tcp
-# 
+#
 #   - name: dhcp
 #     sources: [0.0.0.0/0]
 #     ports: [68/udp]

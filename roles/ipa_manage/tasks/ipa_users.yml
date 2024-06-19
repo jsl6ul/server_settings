@@ -1,6 +1,6 @@
 ---
-- name: "Manage users"
-  ipa_user:
+- name: Manage users
+  community.general.ipa_user:
     name: "{{ item.name }}"
     sn: "{{ item.sn }}"
     givenname: "{{ item.givenname }}"

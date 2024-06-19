@@ -3,7 +3,7 @@
   ansible.posix.sysctl:
     name: "{{ item.name }}"
     value: "{{ item.value }}"
-    state: "{{ item.state|default('present') }}"
-    reload: "{{ item.reload|default(true) }}"
+    state: "{{ item.state | default('present') }}"
+    reload: "{{ item.reload | default(true) }}"
   with_items: "{{ sysctl_entries }}"
   when: sysctl_entries is defined

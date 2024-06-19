@@ -1,9 +1,8 @@
 ---
-
 # Note: IDM do checks. If some unknown host is set here, it will not be added to the hostgroup despite the task succeed.
 
-- name: "Manage hostgroups"
-  ipa_hostgroup:
+- name: Manage hostgroups
+  community.general.ipa_hostgroup:
     name: "{{ item.name }}"
     state: "{{ item.state | default(omit) }}"
     host: "{{ item.host | default(omit) }}"

@@ -1,19 +1,19 @@
 ---
 - name: Install smartmontools
-  package:
+  ansible.builtin.package:
     name: smartmontools
 
 - name: Copy smartd.conf
-  copy:
+  ansible.builtin.copy:
     dest: /etc/smartd.conf
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
     content: "{{ smartd_conf }}"
   notify: Restart smartd
 
 - name: Set smartd service
-  service:
+  ansible.builtin.service:
     name: smartd
     state: "{{ smartd_service_state }}"
     enabled: "{{ smartd_service_enabled }}"

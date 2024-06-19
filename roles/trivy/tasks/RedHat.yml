@@ -1,12 +1,12 @@
 ---
 - name: Install required rpm packages
-  package:
+  ansible.builtin.package:
     name:
       - jq
       - nmap-ncat
 
 - name: Add trivy repository
-  copy:
+  ansible.builtin.copy:
     dest: /etc/yum.repos.d/trivy.repo
     content: |
       [trivy]
@@ -15,7 +15,7 @@
       gpgcheck=1
       enabled=1
       gpgkey=https://aquasecurity.github.io/trivy-repo/rpm/public.key
-    mode: 0644
+    mode: "0644"
 
 - name: Install trivy
   ansible.builtin.dnf:
