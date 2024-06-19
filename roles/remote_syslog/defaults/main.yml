@@ -25,7 +25,7 @@ remote_syslog_rsyslog_conf: |
   {% endif %}
   $IncludeConfig /etc/rsyslog.d/*.conf
 
-  # use a disk queue & forward anything received to a remote server 
+  # use a disk queue & forward anything received to a remote server
   # and have buffering applied automatically when it goes down.
   $WorkDirectory /var/spool/rsyslog
   $ActionQueueType LinkedList   # use asynchronous processing

@@ -12,7 +12,7 @@
     content: "{{ chronyntp_conf }}"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify: Restart chrony
 
 - name: Copy chrony keys file
@@ -21,7 +21,7 @@
     content: "{{ chronyntp_keys }}"
     owner: root
     group: "{{ chronyntp_group }}"
-    mode: 0640
+    mode: "0640"
   notify: Restart chrony
 
 - name: Set chrony service

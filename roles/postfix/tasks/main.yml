@@ -7,7 +7,7 @@
   ansible.builtin.copy:
     dest: /etc/postfix/postfix_relay_pass
     content: "[{{ postfix_relay_server_name }}]:{{ postfix_relay_server_port }} {{ postfix_relay_auth_username }}:{{ postfix_relay_auth_password }}"
-    mode: 0600
+    mode: "0600"
   when:
     - postfix_relay_server_name is defined
     - postfix_relay_server_port is defined
@@ -19,21 +19,21 @@
   ansible.builtin.copy:
     dest: /etc/postfix/transport
     content: "{{ postfix_file_transport }}"
-    mode: 0644
+    mode: "0644"
   notify: Postfix postmap transport
 
 - name: Set /etc/postfix/sender_canonical
   ansible.builtin.copy:
     dest: /etc/postfix/sender_canonical
     content: "{{ postfix_file_sender_canonical }}"
-    mode: 0644
+    mode: "0644"
   notify: Postfix postmap sender canonical
 
 - name: Set postfix main.cf
   ansible.builtin.lineinfile:
     path: /etc/postfix/main.cf
     backup: "{{ postfix_backup_main_conf }}"
-    regexp: "^{{ item.key }}.*"
+    regexp: ^{{ item.key }}.*
     line: "{{ item.key }} = {{ item.value }}"
     state: "{{ item.state | default('present') }}"
   with_items: "{{ postfix_lif_main_conf }}"

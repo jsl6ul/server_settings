@@ -1,27 +1,27 @@
 ---
 - name: Set /etc/firewalld/zones/public.xml
-  template:
+  ansible.builtin.template:
     src: firewalld_zone.xml.j2
     dest: /etc/firewalld/zones/public.xml
   notify: Restart firewalld
 
 - name: Set LogDenied
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/firewalld/firewalld.conf
-    regexp: "^LogDenied"
-    line: "LogDenied={{ firewalld_LogDenied }}"
+    regexp: ^LogDenied
+    line: LogDenied={{ firewalld_log_denied }}
   notify: Restart firewalld
 
 - name: Set AllowZoneDrifting
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/firewalld/firewalld.conf
-    regexp: "^AllowZoneDrifting"
-    line: "AllowZoneDrifting={{ firewalld_AllowZoneDrifting }}"
+    regexp: ^AllowZoneDrifting
+    line: AllowZoneDrifting={{ firewalld_allow_zone_drifting }}
   notify: Restart firewalld
 
 - name: Delete all predefinded zones except public
-  file:
-    path: "/etc/firewalld/zones/{{ item }}.xml"
+  ansible.builtin.file:
+    path: /etc/firewalld/zones/{{ item }}.xml
     state: absent
   with_items:
     - block
@@ -35,7 +35,7 @@
   notify: Restart firewalld
 
 - name: Set firewalld service
-  service:
+  ansible.builtin.service:
     name: firewalld
     state: "{{ firewalld_service_state }}"
     enabled: "{{ firewalld_service_enabled }}"

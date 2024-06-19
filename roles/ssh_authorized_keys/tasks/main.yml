@@ -1,10 +1,10 @@
 ---
 - name: Import merge.yml
-  import_tasks: merge.yml
+  ansible.builtin.import_tasks: merge.yml
   when: inventory_dir != "None"
 
 - name: Add user ssh authorized keys
-  authorized_key:
+  ansible.posix.authorized_key:
     user: "{{ item.user }}"
     key: "{{ item.key }}"
     state: "{{ item.state | default('present') }}"

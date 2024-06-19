@@ -2,9 +2,9 @@
 # Merge all `firewalld_rules` instances
 
 - name: Include vars from group_vars/all and host_vars/ files
-  include_vars:
+  ansible.builtin.include_vars:
     file: "{{ item }}"
-    name: "_mvfwd_a_{{ item|basename|splitext|first }}"
+    name: _mvfwd_a_{{ item | basename | splitext | first }}
   with_items:
     - "{{ inventory_dir }}/group_vars/all.yml"
     - "{{ inventory_dir }}/group_vars/all/firewalld.yml"
@@ -16,9 +16,9 @@
     - '"error while evaluating conditional" not in _reg_incl.message'
 
 - name: Include vars from group_vars/
-  include_vars:
+  ansible.builtin.include_vars:
     file: "{{ inventory_dir }}/group_vars/{{ item }}.yml"
-    name: "_mvfwd_b_{{ item|basename|splitext|first }}"
+    name: _mvfwd_b_{{ item | basename | splitext | first }}
   loop: "{{ group_names }}"
   register: _reg_incl
   ignore_errors: true
@@ -28,6 +28,6 @@
     - '"error while evaluating conditional" not in _reg_incl.message'
 
 - name: Merge firewalld_rules
-  set_fact:
-    _merged_firewalld_rules: "{{ _merged_firewalld_rules|default([]) + lookup('ansible.builtin.vars', item).firewalld_rules|default([]) }}"
+  ansible.builtin.set_fact:
+    _merged_firewalld_rules: "{{ _merged_firewalld_rules | default([]) + lookup('ansible.builtin.vars', item).firewalld_rules | default([]) }}"
   loop: "{{ query('varnames', '^_mvfwd_(.*)$') }}"

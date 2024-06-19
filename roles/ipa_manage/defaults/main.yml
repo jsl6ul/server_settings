@@ -8,7 +8,7 @@ ipa_manage_pass: secret
 ipa_manage_validate_certs: true
 
 # pw expiration in today + 365 days
-ipa_manage_password_expiration: "{{ '%Y%m%d%H%M%S' | strftime( ansible_date_time.epoch|int + 31536000 ) }}"
+ipa_manage_password_expiration: "{{ '%Y%m%d%H%M%S' | strftime(ansible_date_time.epoch | int + 31536000) }}"
 
 # ipa_manage_users:
 #   - name: sbldap

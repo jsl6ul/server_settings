@@ -1,12 +1,12 @@
 ---
 - name: Install firewalld
-  package:
+  ansible.builtin.package:
     name: firewalld
 
 - name: Import merge.yml
-  import_tasks: merge.yml
+  ansible.builtin.import_tasks: merge.yml
   when: inventory_dir != "None"
 
 - name: Import firewalld.yml
-  import_tasks: firewalld.yml
+  ansible.builtin.import_tasks: firewalld.yml
   when: _merged_firewalld_rules is defined

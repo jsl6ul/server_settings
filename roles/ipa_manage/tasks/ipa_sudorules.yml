@@ -1,6 +1,6 @@
 ---
-- name: "Manage sudo rules"
-  ipa_sudorule:
+- name: Manage sudo rules
+  community.general.ipa_sudorule:
     name: "{{ item.name }}"
     description: "{{ item.description }}"
     host: "{{ item.host | default(omit) }}"

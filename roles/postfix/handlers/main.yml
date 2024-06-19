@@ -1,22 +1,22 @@
 ---
 - name: Postfix postmap relay pass
-  command: postmap /etc/postfix/postfix_relay_pass
+  ansible.builtin.command: postmap /etc/postfix/postfix_relay_pass
   changed_when: false
 
 - name: Postfix postmap transport
-  command: postmap hash:/etc/postfix/transport
+  ansible.builtin.command: postmap hash:/etc/postfix/transport
   changed_when: false
 
 - name: Postfix postmap sender canonical
-  command: postmap hash:/etc/postfix/sender_canonical
+  ansible.builtin.command: postmap hash:/etc/postfix/sender_canonical
   changed_when: false
 
 - name: New aliases
-  command: newaliases
+  ansible.builtin.command: newaliases
   changed_when: false
 
 - name: Restart postfix
-  service:
+  ansible.builtin.service:
     name: postfix
     state: restarted
   when: postfix_service_enabled

@@ -1,15 +1,15 @@
 ---
 - name: Stop smartd
-  service:
+  ansible.builtin.service:
     name: smartd
     state: stopped
 
 - name: Start smartd
-  service:
+  ansible.builtin.service:
     name: smartd
     state: stopped
 
 - name: Restart smartd
-  service:
+  ansible.builtin.service:
     name: smartd
     state: restarted

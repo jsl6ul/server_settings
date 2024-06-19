@@ -9,7 +9,7 @@
 - name: Set /etc/conman.conf
   ansible.builtin.copy:
     dest: /etc/conman.conf
-    mode: 0640
+    mode: "0640"
     owner: root
     group: root
     content: "{{ conman_file_conf }}"
@@ -19,7 +19,7 @@
 - name: Set /etc/default/conman.conf
   ansible.builtin.copy:
     dest: /etc/default/conman.conf
-    mode: 0644
+    mode: "0644"
     owner: root
     group: root
     content: "{{ conman_file_sysconfig }}"
@@ -29,7 +29,7 @@
 - name: Set /etc/conman.pswd
   ansible.builtin.copy:
     dest: /etc/conman.pswd
-    mode: 0640
+    mode: "0640"
     owner: root
     group: root
     content: "{{ conman_file_password_db }}"
@@ -39,7 +39,7 @@
 - name: Set /etc/logrotate.d/conman
   ansible.builtin.copy:
     dest: /etc/logrotate.d/conman
-    mode: 0644
+    mode: "0644"
     owner: root
     group: root
     content: "{{ conman_file_logrotate }}"
@@ -56,7 +56,7 @@
     path: "{{ ansible_user_dir }}/.ssh/config"
     block: "{{ conman_bif_ssh_user_config }}"
     marker: "### {mark} Ansible Managed Block - conman_bif_ssh_user_config ###"
-    mode: 0600
+    mode: "0600"
     create: true
     state: "{{ conman_bif_state_ssh_user_config }}"
   when: conman_bif_state_ssh_user_config is defined
