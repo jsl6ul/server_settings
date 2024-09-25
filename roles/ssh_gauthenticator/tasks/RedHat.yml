@@ -1,8 +1,8 @@
 ---
 - name: Install epel-release
-  package:
+  ansible.builtin.package:
     name: epel-release
 
 - name: Install google-authenticator
-  package:
+  ansible.builtin.package:
     name: google-authenticator
