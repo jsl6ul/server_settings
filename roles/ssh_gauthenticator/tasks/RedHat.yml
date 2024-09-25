@@ -1,0 +1,8 @@
+---
+- name: Install epel-release
+  package:
+    name: epel-release
+
+- name: Install google-authenticator
+  package:
+    name: google-authenticator

@@ -1,0 +1,66 @@
+---
+# google-authenticator check script for pam_exec
+ssh_gauthenticator_script_check: |
+  #!/bin/bash
+  # this script, called by pam_exec in pam.d/ssh,
+  # change the shell to run google authenticator
+  # if $HOME/.google_authenticator is missing
+  # otherwise set shell to /bin/bash
+  trap 'exit 1' SIGINT
+  homedir=`getent passwd "$PAM_USER" | cut -d: -f6`
+  usershell=`getent passwd "$PAM_USER" | cut -d: -f7`
+  if [ ! -f $homedir/.google_authenticator ] && [ "$usershell" != "/usr/local/bin/garun.sh" ]; then
+    chsh -s /usr/local/bin/garun.sh $PAM_USER
+    echo -e "\n\n Multi-factor authentication is not configured. Please log in again to configure it."
+    echo -e " -----------------------------------------------------------------------------------\n\n"
+    exit 1
+  elif [ "$usershell" == "/usr/local/bin/garun.sh" ]; then
+    chsh -s /bin/bash $PAM_USER
+  fi
+
+# temporary shell script to run google-authenticator configuration
+ssh_gauthenticator_script_run: |
+  #!/bin/bash
+  # this script run google authenticator
+  # when $HOME/.google_authenticator is missing
+  trap 'exit 1' SIGINT
+  if [ ! -f $HOME/.google_authenticator ]; then
+    /usr/bin/google-authenticator -t -D -f -r 3 -R 30 -w 2
+  fi
+
+# configuration for sshd_config
+ssh_gauthenticator_sshd_config:
+  - key: UsePAM
+    val: "yes"
+  - key: ChallengeResponseAuthentication
+    val: "yes"
+  - key: AuthenticationMethods
+    val: publickey,keyboard-interactive
+  - key: KbdInteractiveAuthentication
+    val: "yes"
+  - key: PasswordAuthentication
+    val: "no"
+
+# sshd config absolute filename
+ssh_gauthenticator_sshd_config_path: /etc/ssh/sshd_config
+
+# lineinfile to enable/disable pam/ssh password authentication
+ssh_gauthenticator_pam_ssh_password_lif:
+  regexp: "^@include common-auth$"
+  line: "#@include common-auth"
+
+# pam/ssh absolute filename
+ssh_gauthenticator_pam_ssh_path: /etc/pam.d/sshd
+
+# blockinfile for pam.d/ssh
+ssh_gauthenticator_pam_ssh_bif: |
+  # two-factor authentication via google authenticator.
+  # nullok & pam_permit allow users to log in without an
+  # OTP (if not already configured) and gachk.sh checks
+  # and forces google authenticator configuration.
+  auth     required   pam_google_authenticator.so nullok
+  auth     required   pam_permit.so
+  session  required   pam_exec.so stdout seteuid /usr/local/bin/gachk.sh
+
+# blockinfile insertafter
+ssh_gauthenticator_pam_ssh_bif_after: "^.*@include common-auth"

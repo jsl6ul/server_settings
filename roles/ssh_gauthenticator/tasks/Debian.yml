@@ -1,0 +1,4 @@
+---
+- name: Install libpam-google-authenticator
+  package:
+    name: libpam-google-authenticator
