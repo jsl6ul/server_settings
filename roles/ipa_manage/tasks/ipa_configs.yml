@@ -25,4 +25,4 @@
   register: _ipa_command_config
   with_items: "{{ ipa_manage_configs }}"
   failed_when: (_ipa_command_config.failed == true) and ("no modifications to be performed" not in _ipa_command_config.msg)
-  when: ipa_configs | default([]) | length>0
+  when: ipa_manage_configs | default([]) | length>0

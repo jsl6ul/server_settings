@@ -1,35 +1,35 @@
 ---
 - name: include ipa_configs
   import_tasks: ipa_configs.yml
-  when: ipa_configs is defined
+  when: ipa_manage_configs is defined
   run_once: yes
 
 - name: include ipa_users
   import_tasks: ipa_users.yml
-  when: ipa_users is defined
+  when: ipa_manage_users is defined
   run_once: yes
 
 - name: include ipa_groups
   import_tasks: ipa_groups.yml
-  when: ipa_groups is defined
+  when: ipa_manage_groups is defined
   run_once: yes
 
 - name: include ipa_hostgroups
   import_tasks: ipa_hostgroups.yml
-  when: ipa_hostgroups is defined
+  when: ipa_manage_hostgroups is defined
   run_once: yes
 
 - name: include ipa_roles
   import_tasks: ipa_roles.yml
-  when: ipa_roles is defined
+  when: ipa_manage_roles is defined
   run_once: yes
 
 - name: include ipa_hbacrules
   import_tasks: ipa_hbacrules.yml
-  when: ipa_hbacrules is defined
+  when: ipa_manage_hbacrules is defined
   run_once: yes
 
 - name: include ipa_sudorules
   import_tasks: ipa_sudorules.yml
-  when: ipa_sudorules is defined
+  when: ipa_manage_sudorules is defined
   run_once: yes
