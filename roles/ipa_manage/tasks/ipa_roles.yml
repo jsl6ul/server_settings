@@ -13,4 +13,4 @@
   with_items: "{{ ipa_manage_roles }}"
   loop_control:
     label: "{{ item.name }}"
-  when: ipa_roles | default([]) | length>0
+  when: ipa_manage_roles | default([]) | length>0

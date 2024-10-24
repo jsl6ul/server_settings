@@ -16,4 +16,4 @@
   with_items: "{{ ipa_manage_hostgroups }}"
   loop_control:
     label: "{{ item.name }}"
-  when: ipa_hostgroups | default([]) | length>0
+  when: ipa_manage_hostgroups | default([]) | length>0

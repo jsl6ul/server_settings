@@ -20,4 +20,4 @@
   loop_control:
     label: "{{ item.name }}"
   failed_when: (_ipa_command_hbac.failed == true) and ("no modifications to be performed" not in _ipa_command_hbac.msg)
-  when: ipa_hbacrules | default([]) | length>0
+  when: ipa_manage_hbacrules | default([]) | length>0

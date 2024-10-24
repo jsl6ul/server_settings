@@ -17,4 +17,4 @@
   loop_control:
     label: "{{ item.name }}"
   failed_when: (_ipa_command_group.failed == true) and ("no modifications to be performed" not in _ipa_command_group.msg)
-  when: ipa_groups | default([]) | length>0
+  when: ipa_manage_groups | default([]) | length>0

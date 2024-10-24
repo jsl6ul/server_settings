@@ -22,4 +22,4 @@
   loop_control:
     label: "{{ item.name }}"
   failed_when: (_ipa_command_user.failed == true) and ("no modifications to be performed" not in _ipa_command_user.msg)
-  when: ipa_users | default([]) | length>0
+  when: ipa_manage_users | default([]) | length>0
