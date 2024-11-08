@@ -1,27 +1,28 @@
 ---
 # Connection settings
-ipa_host: idm.example.com
-ipaadmin_user: admin
-ipaadmin_pass: secret
+ipa_manage_host: idm.example.com
+ipa_manage_user: admin
+ipa_manage_pass: secret
+
 # If set to false, the SSL certificates will not be validated.
-ipa_validate_certs: true
+ipa_manage_validate_certs: true
 
 # pw expiration in today + 365 days
-ipa_password_expiration: "{{ '%Y%m%d%H%M%S' | strftime( ansible_date_time.epoch|int + 31536000 ) }}"
+ipa_manage_password_expiration: "{{ '%Y%m%d%H%M%S' | strftime( ansible_date_time.epoch|int + 31536000 ) }}"
 
-# ipa_users:
+# ipa_manage_users:
 #   - name: sbldap
 #     givenname: service
 #     sn: ldap bind account
 #     update_password: on_create
-#     krbpasswordexpiration: "{{ ipa_password_expiration }}"
+#     krbpasswordexpiration: "{{ ipa_manage_password_expiration }}"
 #     password: secret
 #
 #   - name: senroll
 #     givenname: service
 #     sn: ipa enrollment account
 #     update_password: on_create
-#     krbpasswordexpiration: "{{ ipa_password_expiration }}"
+#     krbpasswordexpiration: "{{ ipa_manage_password_expiration }}"
 #     password: secret
 #
 #   - name: jane
@@ -36,7 +37,7 @@ ipa_password_expiration: "{{ '%Y%m%d%H%M%S' | strftime( ansible_date_time.epoch|
 #     update_password: on_create
 #     password: secret
 
-# ipa_groups:
+# ipa_manage_groups:
 #   - name: service
 #     description: Service accounts
 #     state: present
@@ -51,7 +52,7 @@ ipa_password_expiration: "{{ '%Y%m%d%H%M%S' | strftime( ansible_date_time.epoch|
 #       - jane
 #       - john
 
-# ipa_roles:
+# ipa_manage_roles:
 #   - name: ipa_enrollment
 #     privilege:
 #       - Host Administrators
@@ -59,7 +60,7 @@ ipa_password_expiration: "{{ '%Y%m%d%H%M%S' | strftime( ansible_date_time.epoch|
 #     user:
 #       - senroll
 
-# ipa_hostgroups:
+# ipa_manage_hostgroups:
 #   - name: allhosts
 #     host: "{{ groups['all'] }}"
 #
@@ -68,7 +69,7 @@ ipa_password_expiration: "{{ '%Y%m%d%H%M%S' | strftime( ansible_date_time.epoch|
 #       - db1.example.com
 #       - db2.example.com
 
-# ipa_hbacrules:
+# ipa_manage_hbacrules:
 #   - name: sysadmin
 #     description: "Sysadmin HBAC rules"
 #     state: present
@@ -78,7 +79,7 @@ ipa_password_expiration: "{{ '%Y%m%d%H%M%S' | strftime( ansible_date_time.epoch|
 #       - sysadmin
 #     servicecategory: all
 
-# ipa_sudorules:
+# ipa_manage_sudorules:
 #   - name: sysadmin
 #     description: "Sysadmin sudo rules"
 #     hostgroup:
@@ -91,6 +92,6 @@ ipa_password_expiration: "{{ '%Y%m%d%H%M%S' | strftime( ansible_date_time.epoch|
 #     sudoopt:
 #       - "!authenticate"
 
-# ipa_configs:
+# ipa_manage_configs:
 #   - loginshell: /usr/bin/bash
 #     pwdexpadvnotify: 7

@@ -9,11 +9,11 @@
     host: "{{ item.host | default(omit) }}"
     hostgroup: "{{ item.hostgroup | default(omit) }}"
     # Connection settings
-    ipa_host: "{{ ipa_host }}"
-    ipa_user: "{{ ipaadmin_user }}"
-    ipa_pass: "{{ ipaadmin_pass }}"
-    validate_certs: "{{ ipa_validate_certs }}"
-  with_items: "{{ ipa_hostgroups }}"
+    ipa_host: "{{ ipa_manage_host }}"
+    ipa_user: "{{ ipa_manage_user }}"
+    ipa_pass: "{{ ipa_manage_pass }}"
+    validate_certs: "{{ ipa_manage_validate_certs }}"
+  with_items: "{{ ipa_manage_hostgroups }}"
   loop_control:
     label: "{{ item.name }}"
-  when: ipa_hostgroups | default([]) | length>0
+  when: ipa_manage_hostgroups | default([]) | length>0

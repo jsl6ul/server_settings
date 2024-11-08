@@ -11,13 +11,13 @@
     service: "{{ item.service | default(omit) }}"
     servicecategory: "{{ item.servicecategory | default(omit) }}"
     # Connection settings
-    ipa_host: "{{ ipa_host }}"
-    ipa_user: "{{ ipaadmin_user }}"
-    ipa_pass: "{{ ipaadmin_pass }}"
-    validate_certs: "{{ ipa_validate_certs }}"
+    ipa_host: "{{ ipa_manage_host }}"
+    ipa_user: "{{ ipa_manage_user }}"
+    ipa_pass: "{{ ipa_manage_pass }}"
+    validate_certs: "{{ ipa_manage_validate_certs }}"
   register: _ipa_command_hbac
-  with_items: "{{ ipa_hbacrules }}"
+  with_items: "{{ ipa_manage_hbacrules }}"
   loop_control:
     label: "{{ item.name }}"
   failed_when: (_ipa_command_hbac.failed == true) and ("no modifications to be performed" not in _ipa_command_hbac.msg)
-  when: ipa_hbacrules | default([]) | length>0
+  when: ipa_manage_hbacrules | default([]) | length>0

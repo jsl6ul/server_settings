@@ -1,0 +1,36 @@
+---
+- name: Include distribution tasks
+  ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
+
+- name: Copy google-authenticator check script
+  ansible.builtin.copy:
+    dest: /usr/local/bin/gachk.sh
+    mode: "0755"
+    content: "{{ ssh_gauthenticator_script_check }}"
+
+- name: Copy google-authenticator run script
+  ansible.builtin.copy:
+    dest: /usr/local/bin/garun.sh
+    mode: "0755"
+    content: "{{ ssh_gauthenticator_script_run }}"
+
+- name: Set sshd_config
+  ansible.builtin.lineinfile:
+    path: "{{ ssh_gauthenticator_sshd_config_path }}"
+    line: "{{ item.key }} {{ item.val }}"
+    regexp: "^{{ item.key }}.*"
+  with_items: "{{ ssh_gauthenticator_sshd_config }}"
+  notify: Restart sshd
+
+- name: Set pam/ssh password authentication
+  ansible.builtin.lineinfile:
+    path: "{{ ssh_gauthenticator_pam_ssh_path }}"
+    regexp: "{{ ssh_gauthenticator_pam_ssh_password_lif.regexp }}"
+    line: "{{ ssh_gauthenticator_pam_ssh_password_lif.line }}"
+
+- name: Add pam_google_authenticator to pam.d/ssh
+  ansible.builtin.blockinfile:
+    path: /etc/pam.d/sshd
+    marker: "# {mark} sshjumphost mfa"
+    insertafter: "{{ ssh_gauthenticator_pam_ssh_bif_after }}"
+    block: "{{ ssh_gauthenticator_pam_ssh_bif }}"

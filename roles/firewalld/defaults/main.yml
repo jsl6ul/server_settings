@@ -12,9 +12,37 @@ firewalld_LogDenied: "off"
 # https://firewalld.org/2020/01/allowzonedrifting
 firewalld_AllowZoneDrifting: "no"
 
+# Zone target, "ACCEPT|%%REJECT%%|DROP"
+# (Default behavior for every packet not matching any rule.)
+firewalld_zone_target: "%%REJECT%%"
+
+# List ICMP types to limit the exchange of these messages. (firewall-cmd --get-icmptypes)
+# firewalld_icmp_block: [address-unreachable, bad-header, beyond-scope, communication-prohibited, destination-unreachable, echo-reply, echo-request, failed-policy, fragmentation-needed, host-precedence-violation, host-prohibited, host-redirect, host-unknown, host-unreachable, ip-header-bad, neighbour-advertisement, neighbour-solicitation, network-prohibited, network-redirect, network-unknown, network-unreachable, no-route, packet-too-big, parameter-problem, port-unreachable, precedence-cutoff, protocol-unreachable, redirect, reject-route, required-option-missing, router-advertisement, router-solicitation, source-quench, source-route-failed, time-exceeded, timestamp-reply, timestamp-request, tos-host-redirect, tos-host-unreachable, tos-network-redirect, tos-network-unreachable, ttl-zero-during-reassembly, ttl-zero-during-transit, unknown-header-type, unknown-option]
+
+# This flag inverts the icmp block handling.
+# (undefined/no = block icmp messages, yes = accept icmp messages listed in 'firewalld_icmp_block')
+# firewalld_icmp_block_inversion: yes
+
 # firewalld_rules:
-#   - name: allow some icmp
+#   - name: ssh from proxyjump
+#     sources:
+#       - 192.168.0.10/32
+#       - 192.168.0.11/32
+#     services:
+#       - ssh
+#
+#   - name: node_exporter from prometheus server
+#     sources:
+#       - 192.168.0.23/32
+#     ports:
+#       - 9100/tcp
+# 
+#   - name: dhcp
 #     sources: [0.0.0.0/0]
+#     ports: [68/udp]
+#
+#   - name: allow some icmp messages from lan
+#     sources: [192.168.0.0/16]
 #     family: ipv4
 #     icmps:
 #       - echo-request
@@ -23,20 +51,13 @@ firewalld_AllowZoneDrifting: "no"
 #       - time-exceeded
 #       - destination-unreachable
 #     limit: 10/s
-# 
-#   - name: ssh from proxyjump
-#     sources:
-#       - 192.168.0.10/32   # proxyjump1
-#       - 192.168.0.11/32   # proxyjump2
-#     services:
-#       - ssh
-# 
-#   - name: node_exporter from monitoring
-#     sources:
-#       - 192.168.0.23/32   # prometheus server
-#     ports:
-#       - 9100/tcp
-# 
-#   - name: dhcp offer/ack/nak
-#     sources: [0.0.0.0/0]
-#     ports: [68/udp]
+#
+#   - name: allow all ipv4 icmp
+#     sources: [192.168.0.0/16]
+#     family: ipv4
+#     icmps: [communication-prohibited, destination-unreachable, echo-reply, echo-request, fragmentation-needed, host-precedence-violation, host-prohibited, host-redirect, host-unknown, host-unreachable, ip-header-bad, network-prohibited, network-redirect, network-unknown, network-unreachable, parameter-problem, port-unreachable, precedence-cutoff, protocol-unreachable, redirect, required-option-missing, router-advertisement, router-solicitation, source-quench, source-route-failed, time-exceeded, timestamp-reply, timestamp-request, tos-host-redirect, tos-host-unreachable, tos-network-redirect, tos-network-unreachable, ttl-zero-during-reassembly, ttl-zero-during-transit]
+#
+#   - name: allow all ipv6 icmp
+#     sources: [2001:db8:abcd:0012::0/64]
+#     family: ipv6
+#     icmps: [address-unreachable, bad-header, beyond-scope, communication-prohibited, destination-unreachable, echo-reply, echo-request, failed-policy, neighbour-advertisement, neighbour-solicitation, no-route, packet-too-big, parameter-problem, port-unreachable, redirect, reject-route, router-advertisement, router-solicitation, source-quench, time-exceeded, ttl-zero-during-reassembly, ttl-zero-during-transit, unknown-header-type, unknown-option]

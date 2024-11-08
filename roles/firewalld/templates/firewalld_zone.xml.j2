@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<zone target="%%REJECT%%">
+<zone target="{{ firewalld_zone_target }}">
 {% for rule in _merged_firewalld_rules %}
 {% for source in rule.sources %}
 {% if rule.services is defined %}{% for service in rule.services %}
@@ -43,4 +43,10 @@
 {% endfor %}{% endif %}
 {% endfor %}
 {% endfor %}
+{% if firewalld_icmp_block is defined %}{% for icmpblock in firewalld_icmp_block %}
+ <icmp-block name="{{ icmpblock }}"/>
+{% endfor %}{% endif %}
+{% if firewalld_icmp_block_inversion is defined and firewalld_icmp_block_inversion %}
+ <icmp-block-inversion/>
+{% endif %}
 </zone>
