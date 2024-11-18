@@ -1,24 +1,42 @@
 ---
-duomfa_repository_url: "deb [signed-by=/etc/apt/trusted.gpg.d/DUO-GPG-PUBLIC-KEY.asc] https://pkg.duosecurity.com/Debian {{ ansible_distribution_release }} main"
-duomfa_repository_key_url: "https://duo.com/DUO-GPG-PUBLIC-KEY.asc"
-
-# Duo Configuration Options for /etc/duo/login_duo.conf & /etc/duo/pam_duo.conf
-# duomfa_duo_conf:
-#   - option: ikey
-#     value: INTEGRATION_KEY
-#   - option: skey
-#     value: SECRET_KEY
+# Duo Configuration
+# duomfa_duo_config:
+#   - option: groups
+#     value: "!adm,!root,!sysadmin,!wheel,*"
 #   - option: host
-#     value: API_HOSTNAME
+#     value: Your API hostname i.e. api-XXXXXXXX.duosecurity.com
+#   - option: ikey
+#     value: Your integration key
+#   - option: skey
+#     value: Your secret key
 
-# Duo Configuration for /etc/ssh/sshd_config
-# duomfa_sshd_config:
-#   - option: ForceCommand
-#     value: /usr/sbin/login_duo
-#   - option: PermitTunnel
-#     value: "no"
-#   - option: AllowTcpForwarding
-#     value: "no"
+# Required packages
+duomfa_packages:
+  - libpam-duo
 
-# Backup /etc/ssh/sshd_config ?
-duomfa_sshd_config_backup: true
+# lineinfile to add pam_duo.so to /etc/pam.d/common-auth
+duomfa_pam_common_auth:
+  - line: "auth    [success=ok default=bad]    pam_duo.so"
+    regexp: "^.*pam_duo.so$"
+    insertafter: "# and here are more per-package modules .*$"
+# Required pam_ssh_user_auth.so when using pam_2fa
+#  - line: "auth    [success=2 ignore=ignore default=die]    pam_ssh_user_auth.so debug"
+#    regexp: "^.*pam_ssh_user_auth.*"
+#    insertafter: "# and here are more per-package modules .*$"
+
+# Options for OpenSSH
+duomfa_sshd_config:
+  - option: AuthenticationMethods
+    value: "publickey,keyboard-interactive keyboard-interactive"
+  - option: KbdInteractiveAuthentication
+    value: "yes"
+  - option: PasswordAuthentication
+    value: "no"
+  - option: PubkeyAuthentication
+    value: "yes"
+  - option: UseDNS
+    value: "no"
+  - option: UsePAM
+    value: "yes"
+#  - option: ExposeAuthInfo  # Required when using pam_2fa
+#    value: "yes"
