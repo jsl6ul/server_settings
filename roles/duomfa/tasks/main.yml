@@ -1,51 +1,36 @@
 ---
-- name: Install repository key
-  ansible.builtin.get_url:
-    url: "{{ duomfa_repository_key_url }}"
-    dest: /etc/apt/trusted.gpg.d/DUO-GPG-PUBLIC-KEY.asc
-
-- name: Add repository
-  ansible.builtin.copy:
-    dest: /etc/apt/sources.list.d/duosecurity.list
-    content: "{{ duomfa_repository_url }}"
-  register: _add_repo
-
-- name: Install duo
+- name: Install packages
   ansible.builtin.apt:
-    name: duo-unix
-    update_cache: "{{ _add_repo.changed }}"
+    name: "{{ duomfa_packages }}"
 
-- name: Configure /etc/duo/login_duo.conf
+- name: Configure pam_duo.conf
   community.general.ini_file:
-    dest: /etc/duo/login_duo.conf
+    dest: /etc/security/pam_duo.conf
     mode: 0600
     section: "duo"
     option: "{{ item.option }}"
     value: "{{ item.value }}"
-  with_items: "{{ duomfa_duo_conf }}"
+  loop: "{{ duomfa_duo_config }}"
   loop_control:
     label: "{{ item.option }}"
-  when: duomfa_duo_conf is defined
+  when: duomfa_duo_config is defined
 
-- name: Configure /etc/duo/pam_duo.conf
-  community.general.ini_file:
-    dest: /etc/duo/pam_duo.conf
-    mode: 0600
-    section: "duo"
-    option: "{{ item.option }}"
-    value: "{{ item.value }}"
-  with_items: "{{ duomfa_duo_conf }}"
-  loop_control:
-    label: "{{ item.option }}"
-  when: duomfa_duo_conf is defined
+- name: Configure pam common-auth
+  ansible.builtin.lineinfile:
+    dest: /etc/pam.d/common-auth
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    insertafter: "{{ item.insertafter }}"
+    state: "{{ item.state | default('present') }}"
+  loop: "{{ duomfa_pam_common_auth }}"
+  when: duomfa_pam_common_auth is defined
 
-- name: Configure /etc/ssh/sshd_config
+- name: Configure sshd
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
-    backup: "{{ duomfa_sshd_config_backup }}"
     regexp: "^{{ item.option }} .*"
     line: "{{ item.option }} {{ item.value }}"
     state: "{{ item.state | default('present') }}"
-  with_items: "{{ duomfa_sshd_config }}"
+  loop: "{{ duomfa_sshd_config }}"
   when: duomfa_sshd_config is defined
   notify: Restart ssh
