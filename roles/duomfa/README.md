@@ -37,11 +37,12 @@ The article proposes a solution combining `pam_duo` and `login_duo`, but there i
 
 ## Using pam_2fa
 
-You need to build and install [pam_2fa](https://github.com/CERN-CERT/pam_2fa/), add set `duomfa_pam_common_auth` for `pam_ssh_user_auth.so`, see the `defaults/main.yml` file.
+You need to build and install [pam_2fa](https://github.com/CERN-CERT/pam_2fa/).
+
+This role can install and configure `pam_2fa` if you define a .deb package in `duomfa_pam2fa_deb_package` and `duomfa_pam2fa_pam_common_auth` for `pam_ssh_user_auth.so`, see the `defaults/main.yml` file.
 
 
-### Parameter success=x
-The `lineinfile` task will insert `pam_ssh_user_auth.so` after the `# here are the per-package modules`, before the `pam_unix.so`, so when using sssd and `pam_sss.so`, the `success=x` should be 3, otherwise 2.
+Be sure to define the `success=x` according to your needs, in order to prevent accidentally locking yourself out. The `lineinfile` task will insert `pam_ssh_user_auth.so` after the `# here are the per-package modules`, before the `pam_unix.so`, so when using sssd and `pam_sss.so`, the `success=x` should be 3, otherwise 2. 
 
 common-auth with `pam_sss` should look like this:
 ```

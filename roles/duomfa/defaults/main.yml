@@ -35,12 +35,11 @@ duomfa_sshd_config:
   - option: UsePAM
     value: "yes"
 
-
 # pam_2fa: Define the .deb package path or url
 # duomfa_pam2fa_deb_package: ""
 
 # pam_2fa: lineinfile to enable pam_2fa in /etc/pam.d/common-auth
-# Define the success=x according to your needs
+# Define the success=x according to your needs.
 # duomfa_pam2fa_pam_common_auth:
 #   - line: "auth    [success=2 ignore=ignore default=die]    pam_ssh_user_auth.so debug"
 #     regexp: "^.*pam_ssh_user_auth.*"
