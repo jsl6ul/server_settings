@@ -5,7 +5,7 @@ A role to install and configure Duo Unix, Two-Factor Authentication, using `pam_
 Tested on Debian 12, Ubuntu 22 and Ubuntu 24
 
 
-## First Steps
+## Duo account
 
 From https://duo.com/docs/duounix
 
@@ -13,7 +13,7 @@ From https://duo.com/docs/duounix
 > 2. Log in to the Duo Admin Panel and navigate to Applications -> Protect an Application.
 > 3. Locate UNIX Application in the applications list. Click Protect to get your **integration key, secret key, and API hostname**.
 
-and put them in `duomfa_duo_config`, see the `defaults/main.yml` file.
+Set the ikey, skey and host in `duomfa_duo_config`, see the `defaults/main.yml` file.
 
 
 ## Is it possible to configure Duo Unix to accept either password or SSH key authentication?
@@ -38,3 +38,24 @@ The article proposes a solution combining `pam_duo` and `login_duo`, but there i
 ## Using pam_2fa
 
 You need to build and install [pam_2fa](https://github.com/CERN-CERT/pam_2fa/), add `ExposeAuthInfo` to `duomfa_sshd_config` and update `duomfa_pam_common_auth` for `pam_ssh_user_auth.so`, see the `defaults/main.yml` file.
+
+The `lineinfile` task will insert `pam_ssh_user_auth.so` after the `# here are the per-package modules`, before the `pam_unix.so`, so when using sssd and pam_sss.so, the `success=x` should be 3, otherwise 2.
+
+- common-auth with pam_sss
+```
+# here are the per-package modules (the "Primary" block)
+auth    [success=3 ignore=ignore default=die]    pam_ssh_user_auth.so debug
+auth    [success=2 default=ignore]      pam_unix.so nullok
+auth    [success=1 default=ignore]      pam_sss.so use_first_pass
+# here's the fallback if no module succeeds
+auth    requisite                       pam_deny.so
+```
+
+- common-auth without pam_sss
+```
+# here are the per-package modules (the "Primary" block)
+auth    [success=2 ignore=ignore default=die]    pam_ssh_user_auth.so debug
+auth    [success=1 default=ignore]      pam_unix.so nullok
+# here's the fallback if no module succeeds
+auth    requisite                       pam_deny.so
+```
