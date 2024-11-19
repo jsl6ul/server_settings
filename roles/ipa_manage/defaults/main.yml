@@ -94,4 +94,4 @@ ipa_manage_password_expiration: "{{ '%Y%m%d%H%M%S' | strftime( ansible_date_time
 
 # ipa_manage_configs:
 #   - loginshell: /usr/bin/bash
-#     pwdexpadvnotify: 7
+#   - pwdexpadvnotify: 7
