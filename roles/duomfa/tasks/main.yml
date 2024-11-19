@@ -1,5 +1,5 @@
 ---
-- name: Install packages
+- name: Install libpam-duo
   ansible.builtin.apt:
     name: "{{ duomfa_packages }}"
 
@@ -34,3 +34,6 @@
   loop: "{{ duomfa_sshd_config }}"
   when: duomfa_sshd_config is defined
   notify: Restart ssh
+
+- name: Include pam_2fa tasks
+  ansible.builtin.include_tasks: pam_2fa.yml
