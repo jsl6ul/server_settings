@@ -1,0 +1,39 @@
+---
+- name: Install libpam-duo
+  ansible.builtin.apt:
+    name: "{{ duomfa_packages }}"
+
+- name: Configure pam_duo.conf
+  community.general.ini_file:
+    dest: /etc/security/pam_duo.conf
+    mode: 0600
+    section: "duo"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  loop: "{{ duomfa_duo_config }}"
+  loop_control:
+    label: "{{ item.option }}"
+  when: duomfa_duo_config is defined
+
+- name: Configure pam common-auth
+  ansible.builtin.lineinfile:
+    dest: /etc/pam.d/common-auth
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    insertafter: "{{ item.insertafter }}"
+    state: "{{ item.state | default('present') }}"
+  loop: "{{ duomfa_pam_common_auth }}"
+  when: duomfa_pam_common_auth is defined
+
+- name: Configure sshd
+  ansible.builtin.lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^{{ item.option }} .*"
+    line: "{{ item.option }} {{ item.value }}"
+    state: "{{ item.state | default('present') }}"
+  loop: "{{ duomfa_sshd_config }}"
+  when: duomfa_sshd_config is defined
+  notify: Restart ssh
+
+- name: Include pam_2fa tasks
+  ansible.builtin.include_tasks: pam_2fa.yml

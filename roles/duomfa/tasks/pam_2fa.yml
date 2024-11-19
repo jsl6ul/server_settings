@@ -1,0 +1,23 @@
+---
+- name: Install pam2fs
+  apt:
+    deb: "{{ duomfa_pam2fa_deb_package }}"
+  when: duomfa_pam2fa_deb_package is defined
+
+- name: Add ExposeAuthInfo to OpenSSH for pam_2fa
+  ansible.builtin.lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^ExposeAuthInfo .*"
+    line: "ExposeAuthInfo yes"
+  when: duomfa_pam2fa_deb_package is defined
+  notify: Restart ssh
+
+- name: Configure pam common-auth for pam_2fa
+  ansible.builtin.lineinfile:
+    dest: /etc/pam.d/common-auth
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    insertafter: "{{ item.insertafter }}"
+    state: "{{ item.state | default('present') }}"
+  loop: "{{ duomfa_pam2fa_pam_common_auth }}"
+  when: duomfa_pam2fa_deb_package is defined
