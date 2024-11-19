@@ -14,15 +14,11 @@
 duomfa_packages:
   - libpam-duo
 
-# lineinfile to add pam_duo.so to /etc/pam.d/common-auth
+# Add pam_duo.so to /etc/pam.d/common-auth using lineinfile
 duomfa_pam_common_auth:
   - line: "auth    [success=ok default=bad]    pam_duo.so"
     regexp: "^.*pam_duo.so$"
     insertafter: "# and here are more per-package modules .*$"
-# Required pam_ssh_user_auth.so when using pam_2fa
-#  - line: "auth    [success=2 ignore=ignore default=die]    pam_ssh_user_auth.so debug"
-#    regexp: "^.*pam_ssh_user_auth.*"
-#    insertafter: "# and here are more per-package modules .*$"
 
 # Options for OpenSSH
 duomfa_sshd_config:
@@ -38,5 +34,14 @@ duomfa_sshd_config:
     value: "no"
   - option: UsePAM
     value: "yes"
-#  - option: ExposeAuthInfo  # Required when using pam_2fa
-#    value: "yes"
+
+
+# pam_2fa: Define the .deb package path or url
+# duomfa_pam2fa_deb_package: ""
+
+# pam_2fa: lineinfile to enable pam_2fa in /etc/pam.d/common-auth
+# Define the success=x according to your needs
+# duomfa_pam2fa_pam_common_auth:
+#   - line: "auth    [success=2 ignore=ignore default=die]    pam_ssh_user_auth.so debug"
+#     regexp: "^.*pam_ssh_user_auth.*"
+#     insertafter: "# here are the per-package modules.*$"
