@@ -32,7 +32,9 @@
     line: "{{ item.option }} {{ item.value }}"
     state: "{{ item.state | default('present') }}"
   loop: "{{ duomfa_sshd_config }}"
-  when: duomfa_sshd_config is defined
+  when:
+    - duomfa_sshd_config is defined
+    - duomfa_duo_config is defined
   notify: Restart ssh
 
 - name: Include pam_2fa tasks
