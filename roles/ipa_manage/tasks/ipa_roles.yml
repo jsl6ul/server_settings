@@ -2,9 +2,14 @@
 - name: "Manage roles"
   ipa_role:
     name: "{{ item.name }}"
-    privilege: "{{ item.privilege }}"
-    user: "{{ item.user }}"
+    description: "{{ item.description | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    host: "{{ item.host | default(omit) }}"
+    hostgroup: "{{ item.hostgroup | default(omit) }}"
+    privilege: "{{ item.privilege | default(omit) }}"
+    service: "{{ item.service | default(omit) }}"
     state: "{{ item.state | default(omit) }}"
+    user: "{{ item.user | default(omit) }}"
     # Connection settings
     ipa_host: "{{ ipa_manage_host }}"
     ipa_user: "{{ ipa_manage_user }}"

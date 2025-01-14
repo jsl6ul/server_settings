@@ -6,6 +6,7 @@
   ipa_hostgroup:
     name: "{{ item.name }}"
     state: "{{ item.state | default(omit) }}"
+    description: "{{ item.description | default(omit) }}"
     host: "{{ item.host | default(omit) }}"
     hostgroup: "{{ item.hostgroup | default(omit) }}"
     # Connection settings
