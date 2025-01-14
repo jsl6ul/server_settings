@@ -3,10 +3,10 @@
   ipa_group:
     name: "{{ item.name }}"
     description: "{{ item.description | default(omit) }}"
+    external: "{{ item.external | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
     state: "{{ item.state | default(omit) }}"
     user: "{{ item.user | default(omit) }}"
-    group: "{{ item.group | default(omit) }}"
-    external: "{{ item.external | default(omit) }}"
     # Connection settings
     ipa_host: "{{ ipa_manage_host }}"
     ipa_user: "{{ ipa_manage_user }}"
