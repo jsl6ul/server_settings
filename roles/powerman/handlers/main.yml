@@ -1,0 +1,6 @@
+---
+- name: Restart powerman
+  ansible.builtin.service:
+    name: powerman
+    state: restarted
+  when: powerman_service_enabled
