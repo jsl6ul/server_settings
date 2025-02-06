@@ -7,19 +7,31 @@
       - jq
       - netcat-traditional
 
-- name: Install repository key
+- name: Retrieve /usr/share/keyrings/trivy.gpg information
+  stat:
+    path: /usr/share/keyrings/trivy.gpg
+  register: __key_info
+
+- name: Delete /usr/share/keyrings/trivy.gpg
+  file:
+    path: /usr/share/keyrings/trivy.gpg
+    state: absent
+  when: __key_info.stat.exists and __key_info.stat.size == 0
+
+- name: Download repository key
   shell: curl https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor > /usr/share/keyrings/trivy.gpg
   args:
     creates: /usr/share/keyrings/trivy.gpg
+  register: __curl
 
 - name: Add trivy repository
   copy:
     dest: /etc/apt/sources.list.d/trivy.list
     content: |
       deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb {{ ansible_distribution_release }} main
-  register: _add_repo
+  register: __add_repo
 
 - name: Install trivy
   ansible.builtin.apt:
     name: trivy
-    update_cache: "{{ _add_repo.changed }}"
+    update_cache: "{% if __add_repo.changed or __curl.changed %}true{% else %}false{% endif %}"
