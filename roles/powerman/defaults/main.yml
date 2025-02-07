@@ -6,16 +6,23 @@ powerman_service_state: started
 # powerman_conf: |
 #   include "/etc/powerman/ipmipower.dev"
 #
-#   device "ipmi0" "ipmipower" "/usr/sbin/ipmipower -h cpu[01-10]-bmc |&"
-#   device "ipmi1" "ipmipower" "/usr/sbin/ipmipower -h pve[01-03]-bmc |&"
+#   device "ipmi0" "ipmipower" "/usr/sbin/ipmipower -h --config-file=/etc/freeipmi/freeipmi-cpu.conf cpu[01-10]-bmc |&"
+#   device "ipmi1" "ipmipower" "/usr/sbin/ipmipower -h --config-file=/etc/freeipmi/freeipmi-pve.conf pve[01-03]-bmc |&"
 #
 #   node "cpu[01-10]" "ipmi0" "cpu[01-10]-bmc"
 #   node "pve[01-03]" "ipmi1" "pve[01-03]-bmc"
 
-# Blockinfile for /etc/freeipmi/freeipmi.conf
-# freeipmi_conf: |
-#   driver-type LAN_2_0
-#   ipmipower-username admin
-#   ipmipower-password secret
-#   ipmipower-wait-until-on ENABLE
-#   ipmipower-wait-until-off ENABLE
+# Blockinfile for /etc/freeipmi/freeipmi-cpu.conf, and freeipmi-pve.conf
+# freeipmi_conf:
+#   cpu: |
+#     driver-type LAN_2_0
+#     ipmipower-username cpu_ipmi_username
+#     ipmipower-password cpu_ipmi_password
+#     ipmipower-wait-until-on ENABLE
+#     ipmipower-wait-until-off ENABLE
+#   pve: |
+#     driver-type LAN_2_0
+#     ipmipower-username pve_ipmi_username
+#     ipmipower-password pve_ipmi_paswword
+#     ipmipower-wait-until-on ENABLE
+#     ipmipower-wait-until-off ENABLE

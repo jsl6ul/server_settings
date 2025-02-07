@@ -6,15 +6,16 @@
       - freeipmi-tools
       - powerman
 
-- name: Set /etc/freeipmi/freeipmi.conf
-  ansible.builtin.blockinfile:
-    path: /etc/freeipmi/freeipmi.conf
-    block: "{{ freeipmi_conf }}"
-    marker: "### {mark} Ansible Managed Block - freeipmi_conf ###"
+- name: Set freeipmi configuration files
+  ansible.builtin.copy:
+    dest: "/etc/freeipmi/freeipmi-{{ item.key }}.conf"
+    content: "{{ item.value }}"
     owner: root
     group: daemon
     mode: 0640
-    create: true
+  loop: "{{ freeipmi_conf | dict2items }}"
+  loop_control:
+    label: "/etc/freeipmi/freeipmi-{{ item.key }}.conf"
   when: freeipmi_conf is defined
   notify: Restart powerman
 
