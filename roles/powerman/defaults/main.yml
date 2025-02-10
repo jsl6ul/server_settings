@@ -1,0 +1,28 @@
+---
+powerman_service_enabled: true
+powerman_service_state: started
+
+# Blockinfile for /etc/powerman/powerman.conf
+# powerman_conf: |
+#   include "/etc/powerman/ipmipower.dev"
+#
+#   device "ipmi0" "ipmipower" "/usr/sbin/ipmipower --config-file=/etc/freeipmi/freeipmi-cpu.conf --hostname=cpu[01-10]-bmc |&"
+#   device "ipmi1" "ipmipower" "/usr/sbin/ipmipower --config-file=/etc/freeipmi/freeipmi-pve.conf --hostname=pve[01-03]-bmc |&"
+#
+#   node "cpu[01-10]" "ipmi0" "cpu[01-10]-bmc"
+#   node "pve[01-03]" "ipmi1" "pve[01-03]-bmc"
+
+# Configuration files for freeipmi. (ex. /etc/freeipmi/freeipmi-cpu.conf, and freeipmi-pve.conf)
+# freeipmi_conf:
+#   cpu: |
+#     driver-type LAN_2_0
+#     ipmipower-username cpunodes_ipmi_username
+#     ipmipower-password cpumodes_ipmi_password
+#     ipmipower-wait-until-on ENABLE
+#     ipmipower-wait-until-off ENABLE
+#   pve: |
+#     driver-type LAN_2_0
+#     ipmipower-username pvenodes_ipmi_username
+#     ipmipower-password pvenodes_ipmi_paswword
+#     ipmipower-wait-until-on ENABLE
+#     ipmipower-wait-until-off ENABLE

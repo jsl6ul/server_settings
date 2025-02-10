@@ -1,0 +1,38 @@
+---
+- name: Install required packages
+  ansible.builtin.package:
+    name:
+      - expect
+      - freeipmi-tools
+      - powerman
+
+- name: Set freeipmi configuration files
+  ansible.builtin.copy:
+    dest: "/etc/freeipmi/freeipmi-{{ item.key }}.conf"
+    content: "{{ item.value }}"
+    owner: root
+    group: daemon
+    mode: 0640
+  loop: "{{ freeipmi_conf | dict2items }}"
+  loop_control:
+    label: "/etc/freeipmi/freeipmi-{{ item.key }}.conf"
+  when: freeipmi_conf is defined
+  notify: Restart powerman
+
+- name: Set /etc/powerman/powerman.conf
+  ansible.builtin.blockinfile:
+    path: /etc/powerman/powerman.conf
+    block: "{{ powerman_conf }}"
+    marker: "### {mark} Ansible Managed Block - powerman_conf ###"
+    owner: root
+    group: root
+    mode: 0644
+    create: true
+  when: powerman_conf is defined
+  notify: Restart powerman
+
+- name: Set powerman service
+  ansible.builtin.service:
+    name: powerman
+    state: "{{ powerman_service_state }}"
+    enabled: "{{ powerman_service_enabled }}"
