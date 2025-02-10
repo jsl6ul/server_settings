@@ -12,17 +12,17 @@ powerman_service_state: started
 #   node "cpu[01-10]" "ipmi0" "cpu[01-10]-bmc"
 #   node "pve[01-03]" "ipmi1" "pve[01-03]-bmc"
 
-# Blockinfile for /etc/freeipmi/freeipmi-cpu.conf, and freeipmi-pve.conf
+# Configuration files for freeipmi. (ex. /etc/freeipmi/freeipmi-cpu.conf, and freeipmi-pve.conf)
 # freeipmi_conf:
 #   cpu: |
 #     driver-type LAN_2_0
-#     ipmipower-username cpu_ipmi_username
-#     ipmipower-password cpu_ipmi_password
+#     ipmipower-username cpunodes_ipmi_username
+#     ipmipower-password cpumodes_ipmi_password
 #     ipmipower-wait-until-on ENABLE
 #     ipmipower-wait-until-off ENABLE
 #   pve: |
 #     driver-type LAN_2_0
-#     ipmipower-username pve_ipmi_username
-#     ipmipower-password pve_ipmi_paswword
+#     ipmipower-username pvenodes_ipmi_username
+#     ipmipower-password pvenodes_ipmi_paswword
 #     ipmipower-wait-until-on ENABLE
 #     ipmipower-wait-until-off ENABLE
