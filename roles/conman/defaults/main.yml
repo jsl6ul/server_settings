@@ -54,4 +54,4 @@ conman_file_conf: |
 #     StrictHostKeyChecking no
 
 # State 'present|absent' for the blockinfile in: 'ansible_user_dir/.ssh/config'
-conman_bif_state_ssh_user_config: present
+# conman_bif_state_ssh_user_config: present
