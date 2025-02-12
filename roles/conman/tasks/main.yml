@@ -58,8 +58,8 @@
     marker: "### {mark} Ansible Managed Block - conman_bif_ssh_user_config ###"
     mode: 0600
     create: true
-    state: "{{ conman_bif_state_ssh_user_config }}"
-  when: conman_bif_state_ssh_user_config is defined
+    state: "{{ conman_bif_state_ssh_user_config | default('present') }}"
+  when: conman_bif_ssh_user_config is defined
   notify: Restart conman
 
 - name: Set conman service
