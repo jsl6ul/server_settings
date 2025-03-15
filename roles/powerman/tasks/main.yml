@@ -17,6 +17,7 @@
   loop_control:
     label: "/etc/freeipmi/freeipmi-{{ item.key }}.conf"
   when: freeipmi_conf is defined
+  no_log: true
   notify: Restart powerman
 
 - name: Set /etc/powerman/powerman.conf
