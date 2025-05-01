@@ -1,4 +1,9 @@
 ---
+- name: Set system timezone
+  community.general.timezone:
+    name: "{{ chronyntp_timezone }}"
+  when: chronyntp_timezone is defined
+
 - name: Install chrony
   ansible.builtin.package:
     name: chrony
