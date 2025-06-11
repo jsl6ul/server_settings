@@ -16,7 +16,7 @@
   ansible.builtin.file:
     path: /var/spool/rsyslog
     state: directory
-    mode: "0770"
+    mode: "0700"
 
 - name: Set rsyslog.conf
   ansible.builtin.copy:
