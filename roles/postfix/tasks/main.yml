@@ -1,7 +1,9 @@
 ---
 - name: Install postfix
   ansible.builtin.package:
-    name: postfix
+    name:
+      - postfix
+      - libsasl2-modules
 
 - name: Set postfix relay authentication
   ansible.builtin.copy:
