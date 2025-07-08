@@ -23,20 +23,19 @@ All instances of the `firewalld_rules` variable are merged.
 - `group_vars/all.yml`
 - `group_vars/all/firewalld.yml`
 - `host_vars/{{ inventory_hostname }}.yml`
+- `host_vars/{{ inventory_hostname }}/firewalld.yml`
 - and all `group_vars/*.yml` of which the host is a member.
 
 The default ansible operation is to overwrite variables with the "nearest" one.
 [understanding-variable-precedence](https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#understanding-variable-precedence)
 
-For the `firewalld_rules` variable, we want to merge it if it is present in several `vars` files.
+For the `firewalld_rules` variable, we want to merge it if it is present in several files.
 
-This allows us to define the same `firewalld_rules` variable in several files. The rules defined in these files 
+This allows us to define the same `firewalld_rules` in several files. The rules defined in these files 
 will all be applied on the host (rather than only those defined in the "nearest" file).
 
 The principle is relatively simple: the tasks perform an **include_vars** of all vars files related 
-to the host. It then performs an `set_fact` to merge all instances of the `firewalld_rules` variable.
-
-*(Note that the file name is used as a key with set_fact, so if for some reason you have several files with the same name, problems may arise.)*
+to the host. It then performs an `set_fact` to merge all instances of the `firewalld_rules`.
 
 There is always a risk of collision. If the same rule is defined in two places, it will 
 be applied twice, without error. This is not an error in itself, but not necessarily the objective. 
