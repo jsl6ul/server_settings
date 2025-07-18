@@ -19,7 +19,7 @@
   when: __key_info.stat.exists and __key_info.stat.size == 0
 
 - name: Download repository key
-  shell: curl {{ trivy_reposity_key_url }} | gpg --dearmor > /usr/share/keyrings/trivy.gpg
+  shell: curl {{ trivy_deb_reposity_key_url }} | gpg --dearmor > /usr/share/keyrings/trivy.gpg
   args:
     creates: /usr/share/keyrings/trivy.gpg
   register: __curl
