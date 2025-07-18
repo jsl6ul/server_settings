@@ -8,13 +8,7 @@
 - name: Add trivy repository
   copy:
     dest: /etc/yum.repos.d/trivy.repo
-    content: |
-      [trivy]
-      name=Trivy repository
-      baseurl=https://aquasecurity.github.io/trivy-repo/rpm/releases/{{ ansible_distribution_major_version }}/\$basearch/
-      gpgcheck=1
-      enabled=1
-      gpgkey=https://aquasecurity.github.io/trivy-repo/rpm/public.key
+    content: "{{ trivy_rpm_repo }}"
     mode: 0644
 
 - name: Install trivy
