@@ -1,0 +1,12 @@
+---
+trivy_deb_sources_list: "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb {{ ansible_distribution_release }} main"
+
+trivy_reposity_key_url: "https://aquasecurity.github.io/trivy-repo/deb/public.key"
+
+trivy_rpm_repo: |
+  [trivy]
+  name=Trivy repository
+  baseurl=https://aquasecurity.github.io/trivy-repo/rpm/releases/{{ ansible_distribution_major_version }}/\$basearch/
+  gpgcheck=1
+  enabled=1
+  gpgkey=https://aquasecurity.github.io/trivy-repo/rpm/public.key
