@@ -3,7 +3,18 @@
 cronjob_package: "{{ 'cronie' if ansible_os_family == 'RedHat' else 'cron' }}"
 
 # cronjob_entries:
-#   - { user: root, name: "rsync-backup", job: "rsync -a /home server.example.com:/opt/backups/", hour: "4", minute: "37", state: present }
+#   - user: root
+#     name: "rsync-backup"
+#     job: "rsync -a /home server.example.com:/opt/backups/"
+#     hour: "4"
+#     minute: "37"
+#     state: present
+#   - user: root
+#     name: "pkill node"
+#     job: "/usr/bin/pkill -x node"
+#     minute: "*/5"
+#     state: present
+#     error_notification: false  # Disable error notification for this job as the job will fail most of the time.
 
 # Error reporting using logger
 # cronjob_error_notification: "|| logger Error while running cronjob"
