@@ -28,7 +28,7 @@ Some extra Nmap switches:
   --min-rate=500    # speed-up host discovery (adjust for network)
   -T4 or -T5        # Faster scans (be careful on congested networks).
   -sU -p U:53,161   # UDP coverage for custom ports
-  -sU -p-           # UDP coverage for all UDP ports – very slow.
+  -sU -p-           # UDP coverage for all UDP ports - very slow.
   --max-rate=200    # Rate-limit to avoid IDS alarms instead of --min-rate.
   see the man page for more options and examples
 
@@ -97,7 +97,7 @@ if [ "$__html_dir" != "" ]; then
 fi
 
 # ------------------------------------------------------------------
-# INTERNAL VARIABLES – you normally don’t touch these
+# INTERNAL VARIABLES - you normally don’t touch these
 # ------------------------------------------------------------------
 TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
 HOSTLIST="${__output_dir}/live-hosts-${TIMESTAMP}.txt"
@@ -119,14 +119,14 @@ build_port_arg() {
 PORT_ARG=$(build_port_arg)
 
 # ------------------------------------------------------------------
-# Step 0 – prepare output folder
+# Step 0 - prepare output folder
 # ------------------------------------------------------------------
 mkdir -p "${__output_dir}"
 echo "[+] Results will be stored in ${__output_dir}"
 echo "[+] Starting at $(date)" | tee -a "${SCAN_LOG}"
 
 # ------------------------------------------------------------------
-# Step 1 – discover live hosts (ping sweep)
+# Step 1 - discover live hosts (ping sweep)
 # ------------------------------------------------------------------
 echo "[*] Discovering live hosts in ${__target} ..."
 # -sn = ping-scan only (no port scan)
@@ -139,12 +139,12 @@ LIVE_COUNT=$(wc -l < "${HOSTLIST}")
 echo "[+] Found ${LIVE_COUNT} live host(s)." | tee -a "${SCAN_LOG}"
 
 if [[ ${LIVE_COUNT} -eq 0 ]]; then
-    echo "[!] No hosts responded – exiting."
+    echo "[!] No hosts responded - exiting."
     exit 0
 fi
 
 # ------------------------------------------------------------------
-# Step 2 – comprehensive scan of each host
+# Step 2 - comprehensive scan of each host
 # ------------------------------------------------------------------
 echo "[*] Beginning detailed scan of each host ..."
 while IFS= read -r HOST; do
@@ -158,7 +158,7 @@ while IFS= read -r HOST; do
     #   -oA   : write three output files (txt, xml, gnmap) with same base name
     nmap -Pn ${PORT_ARG} ${__extra_opts} -oA "${BASE_OUT}" "${HOST}" 2>>"${SCAN_LOG}"
 
-    echo "[+] Finished ${HOST} – outputs:"
+    echo "[+] Finished ${HOST} - outputs:"
     echo "    ${BASE_OUT}.nmap   (human-readable)"
     echo "    ${BASE_OUT}.xml    (machine-readable, good for tools)"
     echo "    ${BASE_OUT}.gnmap  (greppable list of open ports)"
