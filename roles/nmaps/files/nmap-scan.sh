@@ -30,10 +30,8 @@ Some extra Nmap switches:
   -sU -p U:53,161   # UDP coverage for custom ports
   -sU -p-           # UDP coverage for all UDP ports - very slow.
   --max-rate=200    # Rate-limit to avoid IDS alarms instead of --min-rate.
-  see the man page for more options and examples
 
-Save only open ports
-  After the run, grep the .gnmap files: grep '/open/' *.gnmap > open-ports-summary.txt.
+see the man page for more options and examples
 "
 }
 
@@ -96,16 +94,10 @@ if [ "$__html_dir" != "" ]; then
     which xsltproc >/dev/null
 fi
 
-# ------------------------------------------------------------------
-# INTERNAL VARIABLES - you normally don’t touch these
-# ------------------------------------------------------------------
 TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
 HOSTLIST="${__output_dir}/live-hosts-${TIMESTAMP}.txt"
 SCAN_LOG="${__output_dir}/scan-${TIMESTAMP}.log"
 
-# ------------------------------------------------------------------
-# Helper: build the port argument string based on SCAN_MODE
-# ------------------------------------------------------------------
 build_port_arg() {
     case "$__scan_mode" in
         std)    echo "" ;;                       # the most common 1,000 ports
@@ -115,7 +107,6 @@ build_port_arg() {
         *)      echo "" ;;                       # fallback to std
     esac
 }
-
 PORT_ARG=$(build_port_arg)
 
 # ------------------------------------------------------------------
@@ -129,10 +120,10 @@ echo "[+] Starting at $(date)" | tee -a "${SCAN_LOG}"
 # Step 1 - discover live hosts (ping sweep)
 # ------------------------------------------------------------------
 echo "[*] Discovering live hosts in ${__target} ..."
-# -sn = ping-scan only (no port scan)
+# -sn = ping-scan only
 # -PE = ICMP echo request, -PP = timestamp request, -PM = netmask request
-#   (these increase reliability on odd networks)
-# -oG = greppable output (easy to parse)
+#       (these increase reliability on odd networks)
+# -oG = greppable output
 nmap -sn -PE -PP -PM "${__target}" -oG - | awk '/Up$/{print $2}' > "${HOSTLIST}"
 
 LIVE_COUNT=$(wc -l < "${HOSTLIST}")
@@ -160,12 +151,12 @@ while IFS= read -r HOST; do
 
     echo "[+] Finished ${HOST} - outputs:"
     echo "    ${BASE_OUT}.nmap   (human-readable)"
-    echo "    ${BASE_OUT}.xml    (machine-readable, good for tools)"
-    echo "    ${BASE_OUT}.gnmap  (greppable list of open ports)"
+    echo "    ${BASE_OUT}.gnmap  (greppable)"
+    echo "    ${BASE_OUT}.xml"
 
     if [ "$__html_dir" != "" ]; then
         xsltproc -o $__html_dir/${HOST}-${TIMESTAMP}.html ${BASE_OUT}.xml
-        echo "    $__html_dir/${HOST}-${TIMESTAMP}.html  (html report)"
+        echo "    $__html_dir/${HOST}-${TIMESTAMP}.html"
     fi
 done < "${HOSTLIST}"
 
