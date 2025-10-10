@@ -19,8 +19,9 @@ Reports can be sent to a json input on a graylog server.
 
 XMLFILE=""
 URLPREFIX=""
+STDOUT=""
 
-while getopts "hg:p:i:u:" flag; do
+while getopts "hg:p:i:u:s" flag; do
     case $flag in
         h)
             show_usage
@@ -37,6 +38,9 @@ while getopts "hg:p:i:u:" flag; do
             ;;
         u)
             URLPREFIX="$OPTARG"
+            ;;
+        s)
+            STDOUT="1"
             ;;
         \?)
             # invalid option
@@ -57,7 +61,9 @@ OUTFILE="/tmp/outfile-`date +%s`.json"
 cat "$XMLFILE" | perl -MXML::Simple -MJSON -e 'print encode_json XMLin q{-}' > $TMPFILE
 
 # get scan and target details
-details=(`jq -r '.host.address.addr, .host.hostnames.hostname.name' $TMPFILE`)
+# sometimes ip address can be inside a list
+taddress=`jq -r 'if .host.address | type == "array" then (.host.address[] | select(has("addrtype") and .addrtype == "ipv4").addr) else (.host.address | select(.addrtype == "ipv4").addr) end' $TMPFILE`
+thostname=`jq -r '.host.hostnames.hostname.name' $TMPFILE`
 
 # set html report url
 URL="n/a"
@@ -66,11 +72,16 @@ if [ "$URLPREFIX" != "" ]; then
     URL="$URLPREFIX/$HTMLFILE"
 fi
 
-# create json output file
-cat $TMPFILE |jq '.host.ports.port' |jq --arg Address "${details[0]}" --arg Hostname "${details[1]}" --arg URL "$URL" 'map({Address:$Address, Hostname:$Hostname, URL:$URL, PortId:.portid, Service:.service.name, Protocol:.protocol, State:.state.state, Reason:.state.reason})' > $OUTFILE
+# Set slurp mode if port is not an array
+jqslurp=`cat $TMPFILE |jq -r 'if .host.ports.port | type == "array" then "" else "--slurp" end'`
 
-# echo to stdout
-cat $OUTFILE | jq -c '.[]'
+# create json output file
+cat $TMPFILE |jq '.host.ports.port' |jq $jqslurp --arg Address "$taddress" --arg Hostname "$thostname" --arg URL "$URL" 'map({Address:$Address, Hostname:$Hostname, URL:$URL, PortId:.portid, Service:.service.name, Protocol:.protocol, State:.state.state, Reason:.state.reason})' > $OUTFILE
+
+# print json to stdout
+if [ "$STDOUT" != "" ]; then
+    cat $OUTFILE
+fi
 
 # send to graylog
 if [ "$GLSRV" != "" ] && [ "$GLPRT" != "" ]; then
