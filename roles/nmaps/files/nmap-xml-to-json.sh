@@ -4,14 +4,15 @@ set -euo pipefail
 trap 'echo "Error: $BASH_SOURCE:$LINENO $BASH_COMMAND" >&2' ERR
 
 function show_usage(){
-    echo "Usage: nmap-xml-to-json.sh [-h] [-g server] [-p port] [-u 'http://server/nmaps'] -i input.xml
+    echo "Usage: nmap-xml-to-json.sh [-h] [-s] [-g server] [-p port] [-u 'http://server/nmaps'] -i input.xml
 Convert nmap xml report to json.
 Reports can be sent to a json input on a graylog server.
 
 -i : xml input file
--g : optional graylog server to send report to
--p : optional graylog port for json input
--u : optional URL prefix to access html reports
+-g : graylog server to send report to
+-p : graylog port for json input
+-u : URL prefix to access html reports from JSON
+-s : print JSON to stdout
 -h : this screen
 "
 }
