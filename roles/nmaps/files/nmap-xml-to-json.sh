@@ -16,7 +16,7 @@ Reports can be sent to a json input on a graylog server.
 XMLFILE=""
 URLPREFIX=""
 
-while getopts "hg:p:i:" flag; do
+while getopts "hg:p:i:u:" flag; do
     case $flag in
         h)
             show_usage
