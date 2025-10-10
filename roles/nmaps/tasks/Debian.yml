@@ -1,0 +1,10 @@
+---
+- name: Install required packages
+  package:
+    name:
+      - apache2
+      - jq
+      - libjson-perl
+      - libxml-simple-perl
+      - netcat-traditional
+      - xsltproc
