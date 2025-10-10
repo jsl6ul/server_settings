@@ -1,6 +1,7 @@
 ---
-- name: Include OS tasks
-  include_tasks: "{{ ansible_os_family }}.yml"
+- name: Install required packages
+  package:
+    name: "{{ nmaps_packages }}"
 
 - name: Copy scripts to /usr/local/bin
   copy:
