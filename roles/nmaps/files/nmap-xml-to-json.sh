@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -euo pipefail
+trap 'echo "Error: $BASH_SOURCE:$LINENO $BASH_COMMAND" >&2' ERR
+
 function show_usage(){
     echo "Usage: nmap-xml-to-json.sh [-h] [-g server] [-p port] [-u 'http://server/nmaps'] -i input.xml
 Convert nmap xml report to json.
