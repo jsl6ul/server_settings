@@ -1,0 +1,9 @@
+---
+# debian packages
+nmaps_packages:
+  - apache2  # to access html reports
+  - jq
+  - libjson-perl  # for xml to json
+  - libxml-simple-perl  # for xml to json
+  - netcat-traditional  # to send to graylog
+  - xsltproc  # for xml to html
