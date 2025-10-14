@@ -64,6 +64,7 @@ cat "$XMLFILE" | perl -MXML::Simple -MJSON -e 'print encode_json XMLin q{-}' > $
 # sometimes ip address can be inside a list
 taddress=`jq -r 'if .host.address | type == "array" then (.host.address[] | select(has("addrtype") and .addrtype == "ipv4").addr) else (.host.address | select(.addrtype == "ipv4").addr) end' $TMPFILE`
 thostname=`jq -r '.host.hostnames.hostname.name' $TMPFILE`
+tscanner=`jq -r '.scanner' $TMPFILE`
 
 # set html report url
 URL="n/a"
@@ -76,7 +77,7 @@ fi
 jqslurp=`cat $TMPFILE |jq -r 'if .host.ports.port | type == "array" then "" else "--slurp" end'`
 
 # create json output file
-cat $TMPFILE |jq '.host.ports.port' |jq $jqslurp --arg Address "$taddress" --arg Hostname "$thostname" --arg URL "$URL" 'map({Address:$Address, Hostname:$Hostname, URL:$URL, PortId:.portid, Service:.service.name, Protocol:.protocol, State:.state.state, Reason:.state.reason})' > $OUTFILE
+cat $TMPFILE |jq '.host.ports.port' |jq $jqslurp --arg Scanner "$tscanner" --arg Address "$taddress" --arg Hostname "$thostname" --arg URL "$URL" 'map({Scanner:$Scanner, Address:$Address, Hostname:$Hostname, URL:$URL, PortId:.portid, Service:.service.name, Protocol:.protocol, State:.state.state, Reason:.state.reason})' > $OUTFILE
 
 # print json to stdout
 if [ "$STDOUT" != "" ]; then
