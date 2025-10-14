@@ -1,0 +1,13 @@
+---
+- name: Install required packages
+  package:
+    name: "{{ nmaps_packages }}"
+
+- name: Copy scripts to /usr/local/bin
+  copy:
+    src: "{{ item }}"
+    dest: /usr/local/bin/
+    mode: 0755
+  with_items:
+    - nmap-scan.sh
+    - nmap-xml-to-json.sh

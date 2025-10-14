@@ -1,0 +1,94 @@
+#!/bin/bash
+
+set -euo pipefail
+trap 'echo "Error: $BASH_SOURCE:$LINENO $BASH_COMMAND" >&2' ERR
+
+function show_usage(){
+    echo "Usage: nmap-xml-to-json.sh [-h] [-s] [-g server] [-p port] [-u 'http://server/nmaps'] -i input.xml
+Convert nmap xml report to json.
+Reports can be sent to a json input on a graylog server.
+
+-i : xml input file
+-g : graylog server to send report to
+-p : graylog port for json input
+-u : URL prefix to access html reports from JSON
+-s : print JSON to stdout
+-h : this screen
+"
+}
+
+XMLFILE=""
+URLPREFIX=""
+STDOUT=""
+
+while getopts "hg:p:i:u:s" flag; do
+    case $flag in
+        h)
+            show_usage
+            exit 0
+            ;;
+        g)
+            GLSRV="$OPTARG"
+            ;;
+        p)
+            GLPRT="$OPTARG"
+            ;;
+        i)
+            XMLFILE="$OPTARG"
+            ;;
+        u)
+            URLPREFIX="$OPTARG"
+            ;;
+        s)
+            STDOUT="1"
+            ;;
+        \?)
+            # invalid option
+            exit 1;
+            ;;
+    esac
+done
+
+if [ "$XMLFILE" == "" ] || [ ! -e "$XMLFILE" ]; then
+    echo "Error, no xml input file".
+    exit 1
+fi
+
+TMPFILE="/tmp/xmltojson-`date +%s`.json"
+OUTFILE="/tmp/outfile-`date +%s`.json"
+
+# xml to json
+cat "$XMLFILE" | perl -MXML::Simple -MJSON -e 'print encode_json XMLin q{-}' > $TMPFILE
+
+# get scan and target details
+# sometimes ip address can be inside a list
+taddress=`jq -r 'if .host.address | type == "array" then (.host.address[] | select(has("addrtype") and .addrtype == "ipv4").addr) else (.host.address | select(.addrtype == "ipv4").addr) end' $TMPFILE`
+thostname=`jq -r '.host.hostnames.hostname.name' $TMPFILE`
+tscanner=`jq -r '.scanner' $TMPFILE`
+
+# set html report url
+URL="n/a"
+if [ "$URLPREFIX" != "" ]; then
+    HTMLFILE=`basename $XMLFILE|sed 's/xml/html/'`
+    URL="$URLPREFIX/$HTMLFILE"
+fi
+
+# Set slurp mode if port is not an array
+jqslurp=`cat $TMPFILE |jq -r 'if .host.ports.port | type == "array" then "" else "--slurp" end'`
+
+# create json output file
+cat $TMPFILE |jq '.host.ports.port' |jq $jqslurp --arg Scanner "$tscanner" --arg Address "$taddress" --arg Hostname "$thostname" --arg URL "$URL" 'map({Scanner:$Scanner, Address:$Address, Hostname:$Hostname, URL:$URL, PortId:.portid, Service:.service.name, Protocol:.protocol, State:.state.state, Reason:.state.reason})' > $OUTFILE
+
+# print json to stdout
+if [ "$STDOUT" != "" ]; then
+    cat $OUTFILE
+fi
+
+# send to graylog
+if [ "$GLSRV" != "" ] && [ "$GLPRT" != "" ]; then
+    # send to graylog
+    cat $OUTFILE | jq -c '.[]' | nc -q 1 $GLSRV $GLPRT
+fi
+
+rm -f $TMPFILE
+rm -f $OUTFILE
