@@ -1,10 +1,40 @@
 ---
 - name: "Install package: {{ cronjob_package }}"
-  package:
+  ansible.builtin.package:
     name: "{{ cronjob_package }}"
-  
+
+- name: Copy /etc/cron.allow
+  ansible.builtin.copy:
+    dest: /etc/cron.allow
+    owner: root
+    group: root
+    mode: 0640
+    content: "{{ cronjob_allow_list }}"
+  when: cronjob_allow_list is defined
+
+- name: Copy /etc/cron.deny
+  ansible.builtin.copy:
+    dest: /etc/cron.deny
+    owner: root
+    group: root
+    mode: 0640
+    content: "{{ cronjob_deny_list }}"
+  when: cronjob_deny_list is defined
+
+- name: Delete /etc/cron.allow
+  ansible.builtin.file:
+    path: /etc/cron.allow
+    state: absent
+  when: cronjob_allow_list is undefined
+
+- name: Delete /etc/cron.deny
+  ansible.builtin.file:
+    path: /etc/cron.deny
+    state: absent
+  when: cronjob_deny_list is undefined
+
 - name: Apply cronjobs
-  cron:
+  ansible.builtin.cron:
     cron_file: "{{ item.file | default(omit) }}"
     day: "{{ item.day | default('*') }}"
     env: "{{ item.env | default('no') }}"

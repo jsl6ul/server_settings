@@ -2,6 +2,16 @@
 
 cronjob_package: "{{ 'cronie' if ansible_os_family == 'RedHat' else 'cron' }}"
 
+# Content for /etc/cron.allow
+# cronjob_allow_list: |
+#   george
+#   john
+
+# Content for /etc/cron.deny
+# cronjob_deny_list: |
+#   paul
+#   ringo
+
 # cronjob_entries:
 #   - user: root
 #     name: "rsync-backup"
