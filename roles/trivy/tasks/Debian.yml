@@ -7,22 +7,22 @@
       - jq
       - netcat-traditional
 
-- name: Retrieve /usr/share/keyrings/trivy.gpg information
-  stat:
-    path: /usr/share/keyrings/trivy.gpg
-  register: __key_info
+- name: Make sure /etc/apt/keyrings/ is there
+  ansible.builtin.file:
+    path: /etc/apt/keyrings/
+    state: directory
 
-- name: Delete /usr/share/keyrings/trivy.gpg
+- name: Delete repository key
   file:
-    path: /usr/share/keyrings/trivy.gpg
+    path: /etc/apt/keyrings/trivy.gpg
     state: absent
-  when: __key_info.stat.exists and __key_info.stat.size == 0
+  when: reinstall_repository_key is defined and reinstall_repository_key
 
-- name: Download repository key
-  shell: curl {{ trivy_deb_reposity_key_url }} | gpg --dearmor > /usr/share/keyrings/trivy.gpg
+- name: Download repository key (-e reinstall_repository_key=true)
+  shell: curl {{ trivy_deb_reposity_key_url }} | gpg --dearmor > /etc/apt/keyrings/trivy.gpg
   args:
-    creates: /usr/share/keyrings/trivy.gpg
-  register: __curl
+    creates: /etc/apt/keyrings/trivy.gpg
+  register: __gpgkey
 
 - name: Add trivy repository
   copy:
@@ -33,4 +33,4 @@
 - name: Install trivy
   ansible.builtin.apt:
     name: trivy
-    update_cache: "{% if __add_repo.changed or __curl.changed %}true{% else %}false{% endif %}"
+    update_cache: "{% if __add_repo.changed or __gpgkey.changed %}true{% else %}false{% endif %}"
