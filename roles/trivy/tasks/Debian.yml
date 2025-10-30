@@ -21,7 +21,7 @@
     state: absent
   when: reinstall_repository_key is defined and reinstall_repository_key
 
-- name: Download repository key (-e reinstall_repository_key=true)
+- name: Download repository key (reinstall_repository_key=true)
   shell: curl {{ trivy_deb_reposity_key_url }} | gpg --dearmor > /etc/apt/keyrings/trivy.gpg
   args:
     creates: /etc/apt/keyrings/trivy.gpg
