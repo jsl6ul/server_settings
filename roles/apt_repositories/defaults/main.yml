@@ -1,6 +1,8 @@
 ---
+# Default filename for traditional one-line format found in /etc/apt/sources.list
 apt_repositories_default_filename: /etc/apt/sources
 
+# Traditional one-line format repositories
 # apt_repositories:
 #   - repo: 'deb http://mirror.example.com/debian bookworm main contrib non-free non-free-firmware'
 #
@@ -13,3 +15,12 @@ apt_repositories_default_filename: /etc/apt/sources
 #
 #   - repo: 'deb http://security.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware'
 #     state: 'absent'
+
+# Repositories in deb822 format
+# apt_repositories_deb822:
+#   - name: ubuntu
+#     types: [deb]
+#     uris: http://archive.ubuntu.com/ubuntu/
+#     suites: [noble, noble-updates, noble-backports]
+#     components: [main, restricted, universe, multiverse]
+#     signed_by: /usr/share/keyrings/ubuntu-archive-keyring.gpg
