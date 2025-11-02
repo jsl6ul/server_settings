@@ -2,6 +2,12 @@
 # Default filename for traditional one-line format found in /etc/apt/sources.list
 apt_repositories_default_filename: /etc/apt/sources
 
+# Key urls to download to /etc/apt/keyrings/
+# apt_repositories_key_urls:
+#   - url: http://some_key_url
+#     dest: /etc/apt/keyrings/some.key
+apt_repositories_key_urls: []
+
 # Traditional one-line format repositories
 # apt_repositories:
 #   - repo: 'deb http://mirror.example.com/debian bookworm main contrib non-free non-free-firmware'
@@ -15,6 +21,7 @@ apt_repositories_default_filename: /etc/apt/sources
 #
 #   - repo: 'deb http://security.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware'
 #     state: 'absent'
+apt_repositories: []
 
 # Repositories in deb822 format
 # apt_repositories_deb822:
@@ -24,3 +31,4 @@ apt_repositories_default_filename: /etc/apt/sources
 #     suites: [noble, noble-updates, noble-backports]
 #     components: [main, restricted, universe, multiverse]
 #     signed_by: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+apt_repositories_deb822: []
