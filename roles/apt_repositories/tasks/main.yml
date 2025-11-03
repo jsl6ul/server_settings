@@ -10,7 +10,7 @@
 - name: Download apt keys
   ansible.builtin.get_url:
     url: "{{ item.url }}"
-    dest: "{{ item.dest | default('/etc/apt/keyrings/') }}"
+    dest: "{{ item.dest | default(apt_repositories_default_keyrings_dest) }}"
     mode: '0644'
   loop: "{{ apt_repositories_key_urls }}"
 
