@@ -1,12 +1,40 @@
 ---
 - name: Install packages
-  package:
+  ansible.builtin.package:
     name: "{{ packages_present }}"
     state: present
   when: packages_present is defined
 
 - name: Uninstall packages
-  package:
+  ansible.builtin.package:
     name: "{{ packages_absent }}"
     state: absent
   when: packages_absent is defined
+
+- name: Manages apt packages
+  ansible.builtin.apt:
+    allow_change_held_packages: "{{ item.allow_change_held_packages | default(false) }}"
+    allow_downgrade: "{{ item.allow_downgrade | default(false) }}"
+    allow_unauthenticated: "{{ item.allow_unauthenticated | default(false) }}"
+    autoclean: "{{ item.autoclean | default(false) }}"
+    autoremove: "{{ item.autoremove | default(false) }}"
+    cache_valid_time: "{{ item.cache_valid_time | default(0) }}"
+    clean: "{{ item.clean | default(false) }}"
+    deb: "{{ item.deb | default(omit) }}"
+    default_release: "{{ item.default_release | default(omit) }}"
+    dpkg_options: "{{ item.dpkg_options | default('force-confdef,force-confold') }}"
+    fail_on_autoremove: "{{ item.fail_on_autoremove | default(false) }}"
+    force: "{{ item.force | default(false) }}"
+    force_apt_get: "{{ item.force_apt_get | default(false) }}"
+    install_recommends: "{{ item.install_recommends | default(omit) }}"
+    lock_timeout: "{{ item.lock_timeout | default(60) }}"
+    name: "{{ item.name }}"
+    only_upgrade: "{{ item.only_upgrade | default(false) }}"
+    policy_rc_d: "{{ item.policy_rc_d | default(omit) }}"
+    purge: "{{ item.purge | default(false) }}"
+    state: "{{ item.state | default('present') }}"
+    update_cache: "{{ item.update_cache | default(omit) }}"
+    update_cache_retries: "{{ item.update_cache_retries | default(5) }}"
+    update_cache_retry_max_delay: "{{ item.update_cache_retry_max_delay | default(12) }}"
+    upgrade: "{{ item.upgrade | default(omit) }}"
+  loop: "{{ apt_packages }}"

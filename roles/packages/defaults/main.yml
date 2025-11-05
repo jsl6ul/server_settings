@@ -7,3 +7,9 @@
 
 # packages_absent:
 #   - systemd-timesyncd
+
+# apt_packages:
+#   - name: dmidecode
+#     default_release: bookworm-backports
+
+apt_packages: []
