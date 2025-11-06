@@ -52,4 +52,4 @@
     trusted: "{{ item.trusted | default(omit) }}"
     types: "{{ item.types | default(['deb']) }}"
     uris: "{{ item.uris | default(omit) }}"
-  loop: "{{ apt_repositories_deb822 }}"
+  loop: "{{ deb822_repositories }}"
