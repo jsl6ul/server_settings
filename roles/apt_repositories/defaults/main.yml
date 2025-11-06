@@ -31,11 +31,11 @@ apt_repositories_key_urls: []
 apt_repositories: []
 
 # Repositories in deb822 format
-# apt_repositories_deb822:
+# deb822_repositories:
 #   - name: ubuntu
 #     types: [deb]
 #     uris: http://archive.ubuntu.com/ubuntu/
 #     suites: [noble, noble-updates, noble-backports]
 #     components: [main, restricted, universe, multiverse]
 #     signed_by: /usr/share/keyrings/ubuntu-archive-keyring.gpg
-apt_repositories_deb822: []
+deb822_repositories: []
