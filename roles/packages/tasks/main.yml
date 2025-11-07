@@ -28,7 +28,7 @@
     force_apt_get: "{{ item.force_apt_get | default(false) }}"
     install_recommends: "{{ item.install_recommends | default(omit) }}"
     lock_timeout: "{{ item.lock_timeout | default(60) }}"
-    name: "{{ item.name }}"
+    name: "{{ item.name | default(omit) }}"
     only_upgrade: "{{ item.only_upgrade | default(false) }}"
     policy_rc_d: "{{ item.policy_rc_d | default(omit) }}"
     purge: "{{ item.purge | default(false) }}"
