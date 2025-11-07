@@ -14,12 +14,10 @@ apt_repositories_key_urls: []
 #   - url: http://some_other_key_url
 #     dest: /some/specific/filename.key
 
-# "One-Line-Style Format" repositories
-# The optional filename defines the name of the file in sources.list.d,
-# otherwise the apt_repositories_default_filename will be used.
-apt_repositories_one: []
+# "One-Line-Style Format" repositories, using .list file extension.
+apt_repositories_list: []
 
-# apt_repositories_one:
+# apt_repositories_list:
 #   - repo: 'deb http://mirror.example.com/debian bookworm main contrib non-free non-free-firmware'
 #
 #   - repo: 'deb [check-valid-until=no] http://mirror.example.com/debian bookworm-updates main contrib non-free non-free-firmware'
@@ -28,10 +26,10 @@ apt_repositories_one: []
 #   - repo: 'deb http://security.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware'
 #     state: 'absent'
 
-# "Deb822-style Format" repositories
-apt_repositories_822: []
+# "Deb822-style Format" repositories, using .sources file extension.
+apt_repositories_sources: []
 
-# apt_repositories_822:
+# apt_repositories_sources:
 #   - name: ubuntu
 #     types: [deb]
 #     uris: http://archive.ubuntu.com/ubuntu/
