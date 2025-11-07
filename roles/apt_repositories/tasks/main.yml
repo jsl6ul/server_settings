@@ -1,7 +1,7 @@
 ---
-- name: Make sure /etc/apt/keyrings is present
+- name: Make sure apt_repositories_default_keyrings is present
   ansible.builtin.file:
-    path: /etc/apt/keyrings
+    path: "{{ apt_repositories_default_keyrings }}"
     state: directory
     owner: root
     group: root
@@ -10,11 +10,11 @@
 - name: Download apt keys
   ansible.builtin.get_url:
     url: "{{ item.url }}"
-    dest: "{{ item.dest | default(apt_repositories_default_keyrings_dest) }}"
+    dest: "{{ item.dest | default(apt_repositories_default_keyrings) }}"
     mode: '0644'
   loop: "{{ apt_repositories_key_urls }}"
 
-- name: "Set apt repositories"
+- name: "Set apt repositories, One-Line-Style Format"
   ansible.builtin.apt_repository:
     codename: "{{ item.codename | default(omit) }}"
     filename: "{{ item.filename | default(apt_repositories_default_filename) }}"
@@ -26,9 +26,9 @@
     update_cache_retry_max_delay: "{{ item.update_cache_retry_max_delay | default(omit) }}"
     update_cache: "{{ item.update_cache | default(omit) }}"
     validate_certs: "{{ item.validate_certs | default(omit) }}"
-  loop: "{{ apt_repositories }}"
+  loop: "{{ apt_repositories_one }}"
 
-- name: "Set apt repositories, deb822 format"
+- name: "Set apt repositories, Deb822-style Format"
   ansible.builtin.deb822_repository:
     allow_downgrade_to_insecure: "{{ item.allow_downgrade_to_insecure | default(omit) }}"
     allow_insecure: "{{ item.allow_insecure | default(omit) }}"
@@ -52,4 +52,4 @@
     trusted: "{{ item.trusted | default(omit) }}"
     types: "{{ item.types | default(['deb']) }}"
     uris: "{{ item.uris | default(omit) }}"
-  loop: "{{ deb822_repositories }}"
+  loop: "{{ apt_repositories_822 }}"

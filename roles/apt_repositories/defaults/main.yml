@@ -1,22 +1,25 @@
 ---
-# Default filename for traditional one-line format found in /etc/apt/sources.list
+# Default filename for traditional "One-Line-Style Format"
+# The .list extension will be automatically added.
 apt_repositories_default_filename: /etc/apt/sources
 
 # Default location for storing GPG keyrings
-apt_repositories_default_keyrings_dest: /etc/apt/keyrings/
+apt_repositories_default_keyrings: /etc/apt/keyrings/
 
 # Key urls to download
-# apt_repositories_key_urls:
-#   - url: http://some_key_url
-#
-#   - url: http://some_other_key_url
-#     dest: /some/specific/filename.key
 apt_repositories_key_urls: []
 
-# Traditional one-line format repositories
-# - filename: sets the name of the source list file in sources.list.d.
-#   The .list extension will be automatically added.
-# apt_repositories:
+# apt_repositories_key_urls:
+#   - url: http://some_key_url
+#   - url: http://some_other_key_url
+#     dest: /some/specific/filename.key
+
+# "One-Line-Style Format" repositories
+# Optional filename sets the name of the source list file in sources.list.d.
+# The .list extension will be automatically added.
+apt_repositories_one: []
+
+# apt_repositories_one:
 #   - repo: 'deb http://mirror.example.com/debian bookworm main contrib non-free non-free-firmware'
 #
 #   - repo: 'deb [check-valid-until=no] http://mirror.example.com/debian bookworm-updates main contrib non-free non-free-firmware'
@@ -28,14 +31,14 @@ apt_repositories_key_urls: []
 #
 #   - repo: 'deb http://security.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware'
 #     state: 'absent'
-apt_repositories: []
 
-# Repositories in deb822 format
-# deb822_repositories:
+# "Deb822-style Format" repositories
+apt_repositories_822: []
+
+# apt_repositories_822:
 #   - name: ubuntu
 #     types: [deb]
 #     uris: http://archive.ubuntu.com/ubuntu/
 #     suites: [noble, noble-updates, noble-backports]
 #     components: [main, restricted, universe, multiverse]
 #     signed_by: /usr/share/keyrings/ubuntu-archive-keyring.gpg
-deb822_repositories: []
