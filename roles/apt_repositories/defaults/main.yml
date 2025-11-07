@@ -15,8 +15,8 @@ apt_repositories_key_urls: []
 #     dest: /some/specific/filename.key
 
 # "One-Line-Style Format" repositories
-# Optional filename sets the name of the source list file in sources.list.d.
-# The .list extension will be automatically added.
+# The optional filename defines the name of the file in sources.list.d,
+# otherwise the apt_repositories_default_filename will be used.
 apt_repositories_one: []
 
 # apt_repositories_one:
@@ -24,10 +24,6 @@ apt_repositories_one: []
 #
 #   - repo: 'deb [check-valid-until=no] http://mirror.example.com/debian bookworm-updates main contrib non-free non-free-firmware'
 #     filename: updates
-#
-#   - repo: 'deb [signed-by=/etc/apt/keyrings/mirror.key] http://mirror.example.com/debian-security bookworm-security main contrib non-free'
-#     state: 'present'
-#     filename: security
 #
 #   - repo: 'deb http://security.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware'
 #     state: 'absent'
