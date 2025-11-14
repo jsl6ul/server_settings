@@ -42,6 +42,7 @@
     job: "{% if cronjob_error_notification is defined and item.env is undefined and (item.error_notification is undefined or item.error_notification) %}{{ item.job +' '+ cronjob_error_notification +' '+ item.name }}{% else %}{{ item.job }}{% endif %}"
     minute: "{{ item.minute | default('*') }}"
     name: "{{ item.name }}"
+    special_time: "{{ item.special_time | default(omit) }}"
     state: "{{ item.state | default('present') }}"
     user: "{{ item.user | default(omit) }}"
     weekday: "{{ item.weekday | default('*') }}"

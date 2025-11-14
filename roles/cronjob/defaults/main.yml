@@ -19,12 +19,20 @@ cronjob_package: "{{ 'cronie' if ansible_os_family == 'RedHat' else 'cron' }}"
 #     hour: "4"
 #     minute: "37"
 #     state: present
+#
 #   - user: root
 #     name: "pkill node"
 #     job: "/usr/bin/pkill -x node"
 #     minute: "*/5"
 #     state: present
 #     error_notification: false  # Disable error notification for this job as the job will fail most of the time.
+#
+#  - user: root
+#    name: "remove /etc/nologin"
+#    job: "/usr/bin/rm -f /etc/nologin"
+#    special_time: reboot
+#    state: present
+#    error_notification: false
 
 # Error reporting using logger
 # cronjob_error_notification: "|| logger Error while running cronjob"
