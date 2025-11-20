@@ -38,4 +38,5 @@ apt_repositories_sources: []
 #     signed_by: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 
 # APT Update cache ?
+apt_repositories_cache_valid_time: 0
 apt_repositories_update_cache: false

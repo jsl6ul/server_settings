@@ -56,5 +56,5 @@
 
 - name: APT Update Cache (apt_repositories_update_cache=true)
   ansible.builtin.apt:
-    update_cache: yes
-  when: apt_repositories_update_cache is defined and apt_repositories_update_cache
+    update_cache: "{{ apt_repositories_update_cache }}"
+    cache_valid_time: "{{ apt_repositories_cache_valid_time }}"
