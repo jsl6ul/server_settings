@@ -36,3 +36,6 @@ apt_repositories_sources: []
 #     suites: [noble, noble-updates, noble-backports]
 #     components: [main, restricted, universe, multiverse]
 #     signed_by: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+
+# APT Update cache ?
+apt_repositories_update_cache: false

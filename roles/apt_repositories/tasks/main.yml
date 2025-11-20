@@ -53,3 +53,8 @@
     types: "{{ item.types | default(['deb']) }}"
     uris: "{{ item.uris | default(omit) }}"
   loop: "{{ apt_repositories_sources }}"
+
+- name: APT Update Cache (apt_repositories_update_cache=true)
+  ansible.builtin.apt:
+    update_cache: yes
+  when: apt_repositories_update_cache is defined and apt_repositories_update_cache
