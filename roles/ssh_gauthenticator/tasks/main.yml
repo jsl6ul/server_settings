@@ -2,11 +2,11 @@
 - name: Include distribution tasks
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
 
-- name: Copy google-authenticator script
+- name: Copy google-authenticator pam script
   ansible.builtin.copy:
-    dest: /usr/local/bin/garun.sh
+    dest: /usr/local/bin/gapam.sh
     mode: "0755"
-    content: "{{ ssh_gauthenticator_script }}"
+    content: "{{ ssh_gauthenticator_pam_script }}"
 
 - name: Set sshd_config
   ansible.builtin.lineinfile:
