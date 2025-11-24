@@ -36,6 +36,10 @@ ssh_gauthenticator_sshd_config:
   - key: PasswordAuthentication
     val: "no"
 
+  #- key: ListenAddress
+  #  val: 0.0.0.0:12345
+  #  re: ListenAddress 0.0.0.0:12345
+
 # sshd config absolute filename
 ssh_gauthenticator_sshd_config_path: /etc/ssh/sshd_config
 

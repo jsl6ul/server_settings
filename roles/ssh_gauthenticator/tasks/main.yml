@@ -12,7 +12,7 @@
   ansible.builtin.lineinfile:
     path: "{{ ssh_gauthenticator_sshd_config_path }}"
     line: "{{ item.key }} {{ item.val }}"
-    regexp: "^{{ item.key }}.*"
+    regexp: "^{{ item.re | default(item.key) }}.*"
   with_items: "{{ ssh_gauthenticator_sshd_config }}"
   notify: Restart sshd
 
@@ -24,7 +24,7 @@
 
 - name: Add pam_google_authenticator to pam.d/ssh
   ansible.builtin.blockinfile:
-    path: /etc/pam.d/sshd
+    path: "{{ ssh_gauthenticator_pam_ssh_path }}"
     marker: "# {mark} sshjumphost mfa"
     insertafter: "{{ ssh_gauthenticator_pam_ssh_bif_after }}"
     block: "{{ ssh_gauthenticator_pam_ssh_bif }}"
