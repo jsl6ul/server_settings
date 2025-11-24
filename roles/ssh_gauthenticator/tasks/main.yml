@@ -12,7 +12,7 @@
   ansible.builtin.lineinfile:
     path: "{{ ssh_gauthenticator_sshd_config_path }}"
     line: "{{ item.key }} {{ item.val }}"
-    regexp: "^{{ item.key }}.*"
+    regexp: "^{{ item.re | default(item.key) }}.*"
   with_items: "{{ ssh_gauthenticator_sshd_config }}"
   notify: Restart sshd
 
