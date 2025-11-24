@@ -24,7 +24,7 @@
 
 - name: Add pam_google_authenticator to pam.d/ssh
   ansible.builtin.blockinfile:
-    path: /etc/pam.d/sshd
+    path: "{{ ssh_gauthenticator_pam_ssh_path }}"
     marker: "# {mark} sshjumphost mfa"
     insertafter: "{{ ssh_gauthenticator_pam_ssh_bif_after }}"
     block: "{{ ssh_gauthenticator_pam_ssh_bif }}"
