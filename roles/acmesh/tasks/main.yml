@@ -1,0 +1,23 @@
+---
+- name: Install requirements
+  package:
+    name: "{{ acmesh_packages }}"
+
+- name: Git clone acmesh repository
+  ansible.builtin.git:
+    repo: "{{ acmesh_git.repo }}"
+    dest: "{{ acmesh_git.dest }}"
+    version: "{{ acmesh_git.version }}"
+
+- name: Install acme.sh (acmesh_install=true)
+  ansible.builtin.command: "{{ acmesh_install_command }}"
+  become: yes
+  become_user: "{{ acmesh_user.name }}"
+  args:
+    chdir: "{{ acmesh_git.dest }}"
+  when:
+    - acmesh_user is defined
+    - acmesh_user.name is defined
+    - acmesh_user.email is defined
+    - acmesh_install is defined
+    - acmesh_install

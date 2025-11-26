@@ -1,0 +1,18 @@
+---
+acmesh_git:
+  repo: https://github.com/acmesh-official/acme.sh.git
+  dest: /opt/acmesh
+  version: 3.1.1
+
+acmesh_install_command: |
+  {{ acmesh_git.dest }}/acme.sh --install --accountemail {{ acmesh_user.email }}
+
+acmesh_packages:
+  - ca-certificates
+  - git
+  - socat
+
+# acmesh_user:
+#   name: root
+#   # the email used to register an account to Let's Encrypt
+#   email: root@example.com
