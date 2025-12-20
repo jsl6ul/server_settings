@@ -34,5 +34,10 @@ cronjob_package: "{{ 'cronie' if ansible_os_family == 'RedHat' else 'cron' }}"
 #    state: present
 #    error_notification: false
 
+# cron environment variables
+#  - { user: root, env: yes, name: "http_proxy", job: 'http://192.168.1.10:3128' }
+#  - { user: root, env: yes, name: "https_proxy", job: 'http://192.168.1.10:3128' }
+#  - { user: root, env: yes, name: "TMPDIR", job: '/opt/tmp' }
+
 # Error reporting using logger
 # cronjob_error_notification: "|| logger Error while running cronjob"
