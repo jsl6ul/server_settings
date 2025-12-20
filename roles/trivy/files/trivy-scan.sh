@@ -3,7 +3,7 @@
 TMPFILE=/tmp/.trivy.report.$USER.$RANDOM.json
 
 function show_usage(){
-    echo "Usage: trivy-scan.sh (-i <image> | -f path | -r path) [-s '/path/'] [-t https://trivy.example.com -k abc123] [-g graylog.example.com -p port] [-w duration]
+    echo "Usage: trivy-scan.sh (-i <image> | -f path | -r path) [-s '/path/'] [-t https://trivy.example.com -k abc123] [-g graylog.example.com -p port] [-w duration] [-c /path/cache]
 
 This script uses trivy, in client-server mode, to scan and report on HIGH & CRITICAL vulnerabilities.
 If defined, the report will be sent to a graylog server, otherwise the report will be printed to the standard output.
@@ -22,6 +22,8 @@ If defined, the report will be sent to a graylog server, otherwise the report wi
 
 -w : trivy scan timeout (default 5m0s)
 
+-c : cache directory (default ~/.cache/trivy)
+
 This script requires: jq, and netcat to send report to graylog.
 "
 }
@@ -29,8 +31,9 @@ This script requires: jq, and netcat to send report to graylog.
 # default timeout
 TMOUT=5m0s
 SKIPDIRS=""
+CACHE_DIR=""
 
-while getopts "hi:f:r:g:p:t:k:w:s:" flag; do
+while getopts "hi:f:r:g:p:t:k:w:s:c:" flag; do
     case $flag in
         h)
             show_usage
@@ -65,6 +68,9 @@ while getopts "hi:f:r:g:p:t:k:w:s:" flag; do
             ;;
         w)
             TMOUT="$OPTARG"
+            ;;
+        c)
+            CACHE_DIR="$OPTARG"
             ;;
         \?)
             # invalid option
@@ -109,12 +115,20 @@ if [ "$GLSRV" != "" ]; then
     fi
 fi
 
+CACHE_ARGS=""
+if [ "$CACHE_DIR" != "" ]; then
+    if [ ! -d "$CACHE_DIR" ]; then
+        echo "No such directory $CACHE_DIR"
+        exit 1
+    fi
+    CACHE_ARGS="--cache-dir $CACHE_DIR"
+fi
 
 # scan
 if [ "$TVSRV" == "" ]; then
-    trivy --severity HIGH,CRITICAL -f json --scanners vuln --timeout $TMOUT $SKIPDIRS $MODE $TARGET > $TMPFILE
+    trivy $CACHE_ARGS --severity HIGH,CRITICAL -f json --scanners vuln --timeout $TMOUT $SKIPDIRS $MODE $TARGET > $TMPFILE
 else
-    trivy --server $TVSRV --token $TVTKN --severity HIGH,CRITICAL -f json --scanners vuln --timeout $TMOUT $SKIPDIRS $MODE $TARGET > $TMPFILE
+    trivy $CACHE_ARGS --server $TVSRV --token $TVTKN --severity HIGH,CRITICAL -f json --scanners vuln --timeout $TMOUT $SKIPDIRS $MODE $TARGET > $TMPFILE
 fi
 
 if [ $? == 0 ]; then
