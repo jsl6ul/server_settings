@@ -10,15 +10,22 @@
 #   - option: skey
 #     value: Your secret key
 
-# Required packages
-duomfa_packages:
-  - libpam-duo
+# Duo package from Debian/Ubuntu repository
+duomfa_package: libpam-duo
+
+# Duo package from Duo repository https://pkg.duosecurity.com/
+# duomfa_deb_reposity_key_url: "https://duo.com/DUO-GPG-PUBLIC-KEY.asc"
+# duomfa_deb_sources_list: "deb [signed-by=/etc/apt/keyrings/duo.gpg] https://pkg.duosecurity.com/{{ ansible_distribution }} {{ ansible_distribution_release }} main"
+# duomfa_package: duo-unix
 
 # Add pam_duo.so to /etc/pam.d/common-auth using lineinfile
 duomfa_pam_common_auth:
-  - line: "auth    [success=ok default=bad]    pam_duo.so"
+  - line: "auth    [success=ok default=bad]    {{ (duomfa_package == 'duo-unix') | ternary('/lib64/security/', '') }}pam_duo.so"
     regexp: "^.*pam_duo.so$"
     insertafter: "# and here are more per-package modules .*$"
+
+# Path to pam_duo.conf file
+duomfa_pam_duo_conf_path: "{{ (duomfa_package == 'duo-unix') | ternary('/etc/duo/pam_duo.conf', '/etc/security/pam_duo.conf') }}"
 
 # Options for OpenSSH
 duomfa_sshd_config:
