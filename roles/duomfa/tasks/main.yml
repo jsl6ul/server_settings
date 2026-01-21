@@ -1,11 +1,54 @@
 ---
-- name: Install libpam-duo
+- name: Install Requirements
   ansible.builtin.apt:
-    name: "{{ duomfa_packages }}"
+    name: gpg,curl
+  when: duomfa_deb_reposity_key_url is defined
+
+- name: Make sure /etc/apt/keyrings/ is present
+  ansible.builtin.file:
+    path: /etc/apt/keyrings/
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  when: duomfa_deb_reposity_key_url is defined
+
+- name: Delete repository key (reinstall_repository_key=true)
+  file:
+    path: /etc/apt/keyrings/duo.gpg
+    state: absent
+  when:
+    - duomfa_deb_reposity_key_url is defined
+    - reinstall_repository_key is defined
+    - reinstall_repository_key
+
+- name: Download repository key (reinstall_repository_key=true)
+  shell: curl {{ duomfa_deb_reposity_key_url }} | gpg --dearmor -o /etc/apt/keyrings/duo.gpg
+  args:
+    creates: /etc/apt/keyrings/duo.gpg
+  register: __gpgkey
+  when: duomfa_deb_reposity_key_url is defined
+
+- name: Add Duo repository
+  copy:
+    dest: /etc/apt/sources.list.d/duo.list
+    content: "{{ duomfa_deb_sources_list }}"
+  register: __add_repo
+  when: duomfa_deb_sources_list is defined
+
+- name: Remove Duo package to avoid conflicts
+  ansible.builtin.apt:
+    name: "{{ (duomfa_package == 'duo-unix') | ternary('libpam-duo,login-duo,libduo3t64', 'duo-unix') }}"
+    state: absent
+
+- name: Install Duo package
+  ansible.builtin.apt:
+    name: "{{ duomfa_package }}"
+    update_cache: "{% if __add_repo.changed or __gpgkey.changed %}true{% else %}false{% endif %}"
 
 - name: Configure pam_duo.conf
   community.general.ini_file:
-    dest: /etc/security/pam_duo.conf
+    dest: "{{ duomfa_pam_duo_conf_path }}"
     mode: 0600
     section: "duo"
     option: "{{ item.option }}"
