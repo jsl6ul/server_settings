@@ -3,7 +3,7 @@
 # pushprox_proxy_flags: '--web.listen-address=":8085"'
 
 # Define pushprox_client_flags to enable the PushProx Client
-# pushprox_client_flags: "--proxy-url=http://proxy:8085/
+# pushprox_client_flags: "--proxy-url=http://proxy:8085/"
 
 # Where the archive should be unpacked
 pushprox_release_dest: /usr/local/bin
@@ -21,7 +21,7 @@ pushprox_client_systemd_unit: |
   [Service]
   User=prometheus
   Group=prometheus
-  ExecStart={{ pushprox_release_dest }}/pushprox-client {{ pushprox_client_flags }}"
+  ExecStart={{ pushprox_release_dest }}/pushprox-client {{ pushprox_client_flags }}
   ExecReload=/bin/kill -HUP $MAINPID
   Restart=on-failure
   StandardOutput=syslog
