@@ -11,7 +11,7 @@
       - LICENSE
     extra_opts:
       - --strip-components=1
-  when: pushprox_proxy_listen_address is defined or pushprox_client_proxy_url is defined
+  when: pushprox_proxy_flags is defined or pushprox_client_flags is defined
 
 - name: Copy pushprox-client systemd unit file
   ansible.builtin.copy:
@@ -19,7 +19,7 @@
     mode: 0644
     content: "{{ pushprox_client_systemd_unit }}"
   notify: Restart pushprox-client
-  when: pushprox_client_proxy_url is defined
+  when: pushprox_client_flags is defined
 
 - name: Disabled pushprox-client services
   ansible.builtin.service:
@@ -27,7 +27,7 @@
     state: stopped
     enabled: false
   register: __dsrv
-  when: pushprox_client_proxy_url is undefined
+  when: pushprox_client_flags is undefined
   ignore_errors: true
   failed_when:
     - __dsrv.failed
@@ -39,7 +39,7 @@
     state: started
     enabled: true
     daemon_reload: true
-  when: pushprox_client_proxy_url is defined
+  when: pushprox_client_flags is defined
 
 - name: Copy pushprox-proxy systemd unit file
   ansible.builtin.copy:
@@ -47,7 +47,7 @@
     mode: 0644
     content: "{{ pushprox_proxy_systemd_unit }}"
   notify: Restart pushprox-proxy
-  when: pushprox_proxy_listen_address is defined
+  when: pushprox_proxy_flags is defined
 
 - name: Disable pushprox-proxy services
   ansible.builtin.service:
@@ -55,7 +55,7 @@
     state: stopped
     enabled: false
   register: __dsrv
-  when: pushprox_proxy_listen_address is undefined
+  when: pushprox_proxy_flags is undefined
   ignore_errors: true
   failed_when:
     - __dsrv.failed
@@ -67,4 +67,4 @@
     state: started
     enabled: true
     daemon_reload: true
-  when: pushprox_proxy_listen_address is defined
+  when: pushprox_proxy_flags is defined

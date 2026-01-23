@@ -6,5 +6,5 @@ the pull model.
 
 https://github.com/prometheus-community/PushProx
 
-Set `pushprox_proxy_listen_address` to enable the PushProx proxy,
-set `pushprox_client_proxy_url` to enable the PushProx client.
+- Define `pushprox_proxy_flags` to enable the PushProx Proxy
+- Define `pushprox_client_flags` to enable the PushProx Client
