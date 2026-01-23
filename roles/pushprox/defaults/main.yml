@@ -1,0 +1,52 @@
+---
+# Define listen_address to enable the PushProx Proxy
+# pushprox_proxy_listen_address: ":8085"
+
+# Define proxy_url to enable the PushProx Client
+# pushprox_client_proxy_url: "http://proxy:8085/"
+
+# Where the archive should be unpacked
+pushprox_release_dest: /usr/local/bin
+
+# Release file to download and extract
+pushprox_release_url: "https://github.com/prometheus-community/PushProx/releases/download/v0.2.0/PushProx-0.2.0.linux-amd64.tar.gz"
+
+# Client systemd unit file
+pushprox_client_systemd_unit: |
+  [Unit]
+  Description=Prometheus PushProx client.
+  Documentation=https://prometheus.io
+  After=network.target
+
+  [Service]
+  User=prometheus
+  Group=prometheus
+  ExecStart={{ pushprox_release_dest }}/pushprox-client --proxy-url={{ pushprox_client_proxy_url }}
+  ExecReload=/bin/kill -HUP $MAINPID
+  Restart=on-failure
+  StandardOutput=syslog
+  StandardError=syslog
+  SyslogIdentifier=pushprox-client
+
+  [Install]
+  WantedBy=multi-user.target
+
+# Proxy systemd unit file
+pushprox_proxy_systemd_unit: |
+  [Unit]
+  Description=Prometheus PushProx proxy.
+  Documentation=https://prometheus.io
+  After=network.target
+
+  [Service]
+  User=prometheus
+  Group=prometheus
+  ExecStart={{ pushprox_release_dest }}/pushprox-proxy --web.listen-address="{{ pushprox_proxy_listen_address }}"
+  ExecReload=/bin/kill -HUP $MAINPID
+  Restart=on-failure
+  StandardOutput=syslog
+  StandardError=syslog
+  SyslogIdentifier=pushprox-proxy
+
+  [Install]
+  WantedBy=multi-user.target

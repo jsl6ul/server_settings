@@ -1,0 +1,70 @@
+---
+- name: Download and unpack PushProx tarball
+  ansible.builtin.unarchive:
+    src: "{{ pushprox_release_url }}"
+    dest: "{{ pushprox_release_dest }}"
+    remote_src: yes
+    mode: '0755'
+    owner: root
+    group: root
+    exclude:
+      - LICENSE
+    extra_opts:
+      - --strip-components=1
+  when: pushprox_proxy_listen_address is defined or pushprox_client_proxy_url is defined
+
+- name: Copy pushprox-client systemd unit file
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/pushprox-client.service
+    mode: 0644
+    content: "{{ pushprox_client_systemd_unit }}"
+  notify: Restart pushprox-client.service
+  when: pushprox_client_proxy_url is defined
+
+- name: Disabled pushprox-client services
+  ansible.builtin.service:
+    name: pushprox-client.service
+    state: stopped
+    enabled: false
+  register: __dsrv
+  when: pushprox_client_proxy_url is undefined
+  ignore_errors: true
+  failed_when:
+    - __dsrv.failed
+    - '"Could not find the requested service" not in __dsrv.msg'
+
+- name: Start pushprox-client services
+  ansible.builtin.service:
+    name: pushprox-client.service
+    state: started
+    enabled: true
+    daemon_reload: true
+  when: pushprox_client_proxy_url is defined
+
+- name: Copy pushprox-proxy systemd unit file
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/pushprox-proxy.service
+    mode: 0644
+    content: "{{ pushprox_proxy_systemd_unit }}"
+  notify: Restart pushprox-proxy
+  when: pushprox_proxy_listen_address is defined
+
+- name: Disable pushprox-proxy services
+  ansible.builtin.service:
+    name: pushprox-proxy.service
+    state: stopped
+    enabled: false
+  register: __dsrv
+  when: pushprox_proxy_listen_address is undefined
+  ignore_errors: true
+  failed_when:
+    - __dsrv.failed
+    - '"Could not find the requested service" not in __dsrv.msg'
+
+- name: Start pushprox-proxy services
+  ansible.builtin.service:
+    name: pushprox-proxy.service
+    state: started
+    enabled: true
+    daemon_reload: true
+  when: pushprox_proxy_listen_address is defined
