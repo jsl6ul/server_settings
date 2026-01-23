@@ -18,7 +18,7 @@
     dest: /etc/systemd/system/pushprox-client.service
     mode: 0644
     content: "{{ pushprox_client_systemd_unit }}"
-  notify: Restart pushprox-client.service
+  notify: Restart pushprox-client
   when: pushprox_client_proxy_url is defined
 
 - name: Disabled pushprox-client services
