@@ -21,7 +21,7 @@ pushprox_client_systemd_unit: |
   [Service]
   User=prometheus
   Group=prometheus
-  ExecStart={{ pushprox_release_dest }}/pushprox-client --proxy-url={{ pushprox_client_proxy_url }}
+  ExecStart={{ pushprox_release_dest }}/pushprox-client --proxy-url="{{ pushprox_client_proxy_url }}"
   ExecReload=/bin/kill -HUP $MAINPID
   Restart=on-failure
   StandardOutput=syslog
