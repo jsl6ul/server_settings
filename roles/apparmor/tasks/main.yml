@@ -1,0 +1,55 @@
+---
+- name: Install packages
+  package:
+    name: "{{ apparmor_packages }}"
+
+- name: Add Apparmor profiles
+  ansible.builtin.copy:
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: "0644"
+    content: "{{ item.content }}"
+  loop: "{{ apparmor_profiles }}"
+  loop_control:
+    label: "{{ item.dest }}"
+  when:
+    - apparmor_profiles is defined
+    - item.state is not defined or item.state != "absent"
+  notify: Reload Apparmor
+
+- name: Remove Apparmor profiles
+  ansible.builtin.command:
+    cmd: "{{ apparmor_parser }} --remove {{ item.dest }}"
+  loop: "{{ apparmor_profiles }}"
+  loop_control:
+    label: "{{ item.dest }}"
+  when:
+    - apparmor_profiles is defined
+    - item.state is defined and item.state == "absent"
+  register: __apparmor_remove
+  failed_when:
+    - __apparmor_remove.failed
+    - '"skipping" not in __apparmor_remove.stderr'
+    - '"Profile doesn''t exist" not in __apparmor_remove.stderr'
+  changed_when:
+    - '"skipping" not in __apparmor_remove.stderr'
+    - '"Profile doesn''t exist" not in __apparmor_remove.stderr'
+
+- name: Delete Apparmor profiles
+  ansible.builtin.file:
+    dest: "{{ item.dest }}"
+    state: "{{ item.state }}"
+  loop: "{{ apparmor_profiles }}"
+  loop_control:
+    label: "{{ item.dest }}"
+  when:
+    - apparmor_profiles is defined
+    - item.state is defined and item.state == "absent"
+  notify: Reload Apparmor
+
+- name: Set apparmor service
+  ansible.builtin.service:
+    name: "{{ apparmor_service_name }}"
+    state: "{{ apparmor_service_state }}"
+    enabled: "{{ apparmor_service_enabled }}"
