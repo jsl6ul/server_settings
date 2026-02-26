@@ -27,6 +27,7 @@
   when:
     - apparmor_profiles is defined
     - item.state is defined and item.state == "absent"
+    - "'/etc/apparmor.d/local/' not in item.dest"
   register: __apparmor_remove
   failed_when:
     - __apparmor_remove.failed
