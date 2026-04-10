@@ -54,6 +54,27 @@
     uris: "{{ item.uris | default(omit) }}"
   loop: "{{ apt_repositories_sources }}"
 
+- name: Disable Repository
+  when: apt_repositories_disabled is defined
+  block:
+    - name: Disable Repository, Stat files
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      loop: "{{ apt_repositories_disabled }}"
+      register: __sources_files_stats
+
+    - name: Disable Repository, Filter results
+      set_fact:
+        __existing_sources_files: "{{ __sources_files_stats.results | json_query('[?stat.exists==`true`].item') }}"
+
+    - name: Disable Repository, Commenting out content
+      ansible.builtin.replace:
+        path: "{{ item }}"
+        regexp: '^(?!#)(?!$)(.*)$'
+        replace: '# \1'
+      loop: "{{ __existing_sources_files }}"
+      when: __existing_sources_files | length > 0
+
 - name: APT Update Cache (apt_repositories_update_cache=true)
   ansible.builtin.apt:
     update_cache: "{{ apt_repositories_update_cache }}"
