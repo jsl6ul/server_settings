@@ -6,6 +6,11 @@ apt_repositories_default_filename: /etc/apt/sources
 # Default location for storing GPG keyrings
 apt_repositories_default_keyrings: /etc/apt/keyrings/
 
+# Repository files to disable (by commenting out their content)
+# apt_repositories_disabled:
+#   - /etc/apt/sources.list
+#   - /etc/apt/sources.list.d/mirror.sources
+
 # Key urls to download
 apt_repositories_key_urls: []
 
