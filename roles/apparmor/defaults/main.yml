@@ -10,7 +10,7 @@ apparmor_service_state: started
 
 # apparmor_profiles:
 #   - dest: /etc/apparmor.d/apptainer
-#     # state: absent
+#     state: present
 #     content: |
 #       # Permit unprivileged user namespace creation for apptainer starter
 #       abi <abi/4.0>,
@@ -20,3 +20,11 @@ apparmor_service_state: started
 #         # Site-specific additions and overrides. See local/README for details.
 #         include if exists <local/apptainer>
 #       }
+#
+#   - dest: /etc/apparmor.d/local/usr.sbin.cupsd
+#     state: absent
+#     content: |
+#       # Local customizations for CUPS daemon
+#       /var/log/cups/custom.log w,
+#       /etc/cups/custom.conf r,
+#       /opt/printer-driver/** rx,
