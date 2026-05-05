@@ -3,7 +3,7 @@
 TMPFILE=/tmp/.trivy.report.$USER.$RANDOM.json
 
 function show_usage(){
-    echo "Usage: trivy-scan.sh (-i <image> | -f path | -r path) [-s '/path/'] [-t https://trivy.example.com -k abc123] [-g graylog.example.com -p port] [-w duration] [-c /path/cache]
+    echo "Usage: trivy-scan.sh (-i <image> | -f path | -r path) [-s '/dir1 /dir2'] [-t https://trivy.example.com -k abc123] [-g graylog.example.com -p port] [-w duration] [-c /path/cache] [-u (os|library)]
 
 This script uses trivy, in client-server mode, to scan and report on HIGH & CRITICAL vulnerabilities.
 If defined, the report will be sent to a graylog server, otherwise the report will be printed to the standard output.
@@ -64,7 +64,9 @@ while getopts "hi:f:r:g:p:t:k:w:s:c:" flag; do
             GLPRT="$OPTARG"
             ;;
         s)
-            SKIPDIRS="--skip-dirs \"$OPTARG\""
+            for p in $OPTARG; do
+                SKIPDIRS="$SKIPDIRS --skip-dirs \"$p\""
+            done
             ;;
         w)
             TMOUT="$OPTARG"
