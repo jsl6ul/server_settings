@@ -5,12 +5,18 @@ TMPFILE=/tmp/.trivy.report.$USER.$RANDOM.json
 function show_usage(){
     echo "Usage: trivy-scan.sh (-i <image> | -f path | -r path) [-s '/dir1 /dir2'] [-t https://trivy.example.com -k abc123] [-g graylog.example.com -p port] [-w duration] [-c /path/cache] [-u (os|library)]
 
-This script uses trivy, in client-server mode, to scan and report on HIGH & CRITICAL vulnerabilities.
-If defined, the report will be sent to a graylog server, otherwise the report will be printed to the standard output.
+This script uses trivy in client-server mode, to scan and report on
+HIGH & CRITICAL vulnerabilities.  If defined, the report will be sent
+to a graylog server, otherwise the report will be printed to the
+standard output.
 
 -i : scan the given container image
 -f : scan the given filesystem path
 -r : scan the rootfs
+
+-u : subset of package types
+     os: scan packages managed by the OS package manager like dpkg, yum, apk.
+     library: scan language-specific packages installed by pip, npm, or gem.
 
 -s : exclude specific directories when scanning a root filesystem
 
@@ -32,8 +38,10 @@ This script requires: jq, and netcat to send report to graylog.
 TMOUT=5m0s
 SKIPDIRS=""
 CACHE_DIR=""
+FULLPKGTYPES=""
+PKGTYPES=""
 
-while getopts "hi:f:r:g:p:t:k:w:s:c:" flag; do
+while getopts "hi:f:r:g:p:t:k:w:s:c:u:" flag; do
     case $flag in
         h)
             show_usage
@@ -73,6 +81,10 @@ while getopts "hi:f:r:g:p:t:k:w:s:c:" flag; do
             ;;
         c)
             CACHE_DIR="$OPTARG"
+            ;;
+        u)
+            FULLPKGTYPES="--pkg-types $OPTARG"
+            PKGTYPES="$OPTARG"
             ;;
         \?)
             # invalid option
@@ -128,9 +140,9 @@ fi
 
 # scan
 if [ "$TVSRV" == "" ]; then
-    trivy $CACHE_ARGS --severity HIGH,CRITICAL -f json --scanners vuln --timeout $TMOUT $SKIPDIRS $MODE $TARGET > $TMPFILE
+    trivy $CACHE_ARGS --severity HIGH,CRITICAL -f json --scanners vuln --timeout $TMOUT $SKIPDIRS $FULLPKGTYPES $MODE $TARGET > $TMPFILE
 else
-    trivy $CACHE_ARGS --server $TVSRV --token $TVTKN --severity HIGH,CRITICAL -f json --scanners vuln --timeout $TMOUT $SKIPDIRS $MODE $TARGET > $TMPFILE
+    trivy $CACHE_ARGS --server $TVSRV --token $TVTKN --severity HIGH,CRITICAL -f json --scanners vuln --timeout $TMOUT $SKIPDIRS $FULLPKGTYPES $MODE $TARGET > $TMPFILE
 fi
 
 if [ $? == 0 ]; then
@@ -140,10 +152,10 @@ if [ $? == 0 ]; then
         if [ "$GLSRV" != "" ]; then
             # send to graylog
             # the last jq replaces the array of elements with several elements (one per line)
-            echo "$json_results"|jq -c '.[].Vulnerabilities' |jq -c --arg TG "$TARGET" --arg MD "$MODE" --arg HN "$HOSTNAME" 'map({Target:$TG, Type:$MD, Host:$HN, CVE:.VulnerabilityID, PkgName:.PkgName, PkgInstVer:.InstalledVersion, PkgFixVer:.FixedVersion, Status:.Status, URL:.PrimaryURL, Title:.Title, Severity:.Severity, PubDate:.PublishedDate, LastUpdate:.LastModifiedDate})' | jq -c '.[]' | nc -q 1 $GLSRV $GLPRT
+            echo "$json_results"|jq -c '.[].Vulnerabilities' |jq -c --arg TG "$TARGET" --arg MD "$MODE" --arg HN "$HOSTNAME" --arg PKGTYPES "$PKGTYPES" 'map({Target:$TG, Type:$MD, Host:$HN, PkgType:$PKGTYPES, CVE:.VulnerabilityID, PkgName:.PkgName, PkgInstVer:.InstalledVersion, PkgFixVer:.FixedVersion, Status:.Status, URL:.PrimaryURL, Title:.Title, Severity:.Severity, PubDate:.PublishedDate, LastUpdate:.LastModifiedDate})' | jq -c '.[]' | nc -q 1 $GLSRV $GLPRT
         else
             # print to stdout
-            echo "$json_results"|jq '.[].Vulnerabilities' |jq --arg TG "$TARGET" --arg MD "$MODE" --arg HN "$HOSTNAME" 'map({Target:$TG, Type:$MD, Host:$HN, CVE:.VulnerabilityID, PkgName:.PkgName, PkgInstVer:.InstalledVersion, PkgFixVer:.FixedVersion, Status:.Status, URL:.PrimaryURL, Title:.Title, Severity:.Severity, PubDate:.PublishedDate, LastUpdate:.LastModifiedDate})'
+            echo "$json_results"|jq '.[].Vulnerabilities' |jq --arg TG "$TARGET" --arg MD "$MODE" --arg HN "$HOSTNAME" --arg PKGTYPES "$PKGTYPES" 'map({Target:$TG, Type:$MD, Host:$HN, PkgType:$PKGTYPES, CVE:.VulnerabilityID, PkgName:.PkgName, PkgInstVer:.InstalledVersion, PkgFixVer:.FixedVersion, Status:.Status, URL:.PrimaryURL, Title:.Title, Severity:.Severity, PubDate:.PublishedDate, LastUpdate:.LastModifiedDate})'
         fi
     fi
 fi
