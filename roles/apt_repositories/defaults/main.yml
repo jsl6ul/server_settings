@@ -45,3 +45,13 @@ apt_repositories_sources: []
 # APT Update cache ?
 apt_repositories_cache_valid_time: 0
 apt_repositories_update_cache: false
+
+# Apt pinning to prioritize specific package versions or repositories.
+# apt_repositories_pinning: |
+#   Package: nvidia-fabricmanager
+#   Pin: version 580.159.04-1ubuntu1
+#   Pin-Priority: 1001
+#
+#   Package: nvidia-modprobe
+#   Pin: version 580.159.04-1ubuntu1
+#   Pin-Priority: 1001

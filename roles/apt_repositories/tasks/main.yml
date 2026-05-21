@@ -75,6 +75,21 @@
       loop: "{{ __existing_sources_files }}"
       when: __existing_sources_files | length > 0
 
+- name: Set Apt pinning file
+  ansible.builtin.copy:
+    dest: /etc/apt/preferences.d/apt_repositories_pinning
+    content: "{{ apt_repositories_pinning }}"
+    mode: 0644
+    owner: root
+    group: root
+  when: apt_repositories_pinning is defined
+
+- name: Remove Apt pinning file
+  ansible.builtin.file:
+    path: /etc/apt/preferences.d/apt_repositories_pinning
+    state: absent
+  when: apt_repositories_pinning is undefined
+
 - name: APT Update Cache (apt_repositories_update_cache=true)
   ansible.builtin.apt:
     update_cache: "{{ apt_repositories_update_cache }}"
