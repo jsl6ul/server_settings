@@ -1,12 +1,37 @@
 ---
 - name: Install firewalld
-  package:
+  ansible.builtin.package:
     name: firewalld
 
-- name: Import merge.yml
-  import_tasks: merge.yml
-  when: inventory_dir != "None"
+- name: Set /etc/firewalld/zones/public.xml
+  ansible.builtin.template:
+    src: firewalld_zone.xml.j2
+    dest: /etc/firewalld/zones/public.xml
+  notify: Restart firewalld
 
-- name: Import firewalld.yml
-  import_tasks: firewalld.yml
-  when: _merged_firewalld_rules is defined
+- name: Set LogDenied
+  ansible.builtin.lineinfile:
+    path: /etc/firewalld/firewalld.conf
+    regexp: "^LogDenied"
+    line: "LogDenied={{ firewalld_LogDenied }}"
+  notify: Restart firewalld
+
+- name: Set AllowZoneDrifting
+  ansible.builtin.lineinfile:
+    path: /etc/firewalld/firewalld.conf
+    regexp: "^AllowZoneDrifting"
+    line: "AllowZoneDrifting={{ firewalld_AllowZoneDrifting }}"
+  notify: Restart firewalld
+
+- name: Delete predefinded zones except public
+  ansible.builtin.file:
+    path: "/etc/firewalld/zones/{{ item }}.xml"
+    state: absent
+  with_items: "{{ firewalld_zones_to_delete }}"
+  notify: Restart firewalld
+
+- name: Set firewalld service
+  ansible.builtin.service:
+    name: firewalld
+    state: "{{ firewalld_service_state }}"
+    enabled: "{{ firewalld_service_enabled }}"
