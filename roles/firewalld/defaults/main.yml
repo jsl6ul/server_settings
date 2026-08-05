@@ -16,6 +16,17 @@ firewalld_AllowZoneDrifting: "no"
 # (Default behavior for every packet not matching any rule.)
 firewalld_zone_target: "%%REJECT%%"
 
+# Predefined zones to delete
+firewalld_zones_to_delete:
+  - block
+  - dmz
+  - drop
+  - external
+  - home
+  - internal
+  - trusted
+  - work
+
 # List ICMP types to limit the exchange of these messages. (firewall-cmd --get-icmptypes)
 # firewalld_icmp_block: [address-unreachable, bad-header, beyond-scope, communication-prohibited, destination-unreachable, echo-reply, echo-request, failed-policy, fragmentation-needed, host-precedence-violation, host-prohibited, host-redirect, host-unknown, host-unreachable, ip-header-bad, neighbour-advertisement, neighbour-solicitation, network-prohibited, network-redirect, network-unknown, network-unreachable, no-route, packet-too-big, parameter-problem, port-unreachable, precedence-cutoff, protocol-unreachable, redirect, reject-route, required-option-missing, router-advertisement, router-solicitation, source-quench, source-route-failed, time-exceeded, timestamp-reply, timestamp-request, tos-host-redirect, tos-host-unreachable, tos-network-redirect, tos-network-unreachable, ttl-zero-during-reassembly, ttl-zero-during-transit, unknown-header-type, unknown-option]
 

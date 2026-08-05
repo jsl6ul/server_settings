@@ -2,9 +2,10 @@
 
 A role for configuring firewalld using a YAML structure.
 
-This role does not use the usual firewalld zones. All rules are placed 
-in the public zone, and restrictions are based on the source address 
+This role does not use the usual firewalld zones. All rules are placed
+in the public zone, and restrictions are based on the source address
 and destination port.
+
 
 # ICMP messages
 
@@ -16,27 +17,40 @@ Take a look at `defaults/main.yml` for some examples.
 
 https://firewalld.org/documentation/zone/options.html
 
+
 # Merging firewalld_rules
 
-All instances of the `firewalld_rules` variable are merged.
+This role apply rules defined in the `firewalld_rules` variable.  If
+you have multiple instances of `firewalld_rules`, one solution is to
+use `community.general.merge_variables` to merge them all
+together. For example:
 
-- `group_vars/all.yml`
-- `group_vars/all/firewalld.yml`
-- `host_vars/{{ inventory_hostname }}.yml`
-- `host_vars/{{ inventory_hostname }}/firewalld.yml`
-- and all `group_vars/*.yml` of which the host is a member.
+- `host_vars/syslog01.yml`
 
-The default ansible operation is to overwrite variables with the "nearest" one.
-[understanding-variable-precedence](https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#understanding-variable-precedence)
+  ```
+  firewalld_rules_syslog01:
+    - name: syslog
+      sources:
+        - 192.168.0.0/16
+      ports:
+        - 514/tcp
+        - 514/udp
+  ```
 
-For the `firewalld_rules` variable, we want to merge it if it is present in several files.
+- `group_vars/all/dhcp.yml`
 
-This allows us to define the same `firewalld_rules` in several files. The rules defined in these files 
-will all be applied on the host (rather than only those defined in the "nearest" file).
+  ```
+  firewalld_rules_all_dhcp:
+    - name: dhcp offer/ack/nak
+      sources: [0.0.0.0/0]
+      ports: [68/udp]
+  ```
 
-The principle is relatively simple: the tasks perform an **include_vars** of all vars files related 
-to the host. It then performs an `set_fact` to merge all instances of the `firewalld_rules`.
+- `group_vars/all/merge_variables.yml`
 
-There is always a risk of collision. If the same rule is defined in two places, it will 
-be applied twice, without error. This is not an error in itself, but not necessarily the objective. 
-Maybe we should add collision detection, and do an assert to cause an ansible error, so that it doesn't go unnoticed.
+  ```
+  firewalld_rules: "{{ lookup('community.general.merge_variables', '^firewalld_rules_.*', initial_value=[]) }}"
+  ```
+
+for more information about `community.general.merge_variables`:
+https://docs.ansible.com/projects/ansible/latest/collections/community/general/merge_variables_lookup.html
