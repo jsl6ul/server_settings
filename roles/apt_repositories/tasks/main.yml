@@ -27,6 +27,7 @@
     update_cache: "{{ item.update_cache | default(omit) }}"
     validate_certs: "{{ item.validate_certs | default(omit) }}"
   loop: "{{ apt_repositories_list }}"
+  register: __apt_rep
 
 - name: "Set apt repositories, Deb822-style Format"
   ansible.builtin.deb822_repository:
@@ -53,6 +54,12 @@
     types: "{{ item.types | default(['deb']) }}"
     uris: "{{ item.uris | default(omit) }}"
   loop: "{{ apt_repositories_sources }}"
+  register: __apt_rep822
+
+- name: Determine whether we need to refresh the APT cache
+  ansible.builtin.set_fact:
+    apt_repositories_update_cache: true
+  when: __apt_rep.changed or __apt_rep822.changed
 
 - name: Disable Repository
   when: apt_repositories_disabled is defined
