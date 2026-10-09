@@ -42,7 +42,7 @@ apt_repositories_sources: []
 #     components: [main, restricted, universe, multiverse]
 #     signed_by: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 
-# APT Update cache ?
+# Apt Update cache ?
 apt_repositories_cache_valid_time: 0
 apt_repositories_update_cache: false
 
@@ -55,3 +55,8 @@ apt_repositories_update_cache: false
 #   Package: nvidia-modprobe
 #   Pin: version 580.159.04-1ubuntu1
 #   Pin-Priority: 1001
+
+# Configure proxy for Apt
+# apt_repositories_proxy: |
+#   Acquire::http::Proxy "http://squid.example.com:3128";
+#   Acquire::https::Proxy "http://squid.example.com:3128";

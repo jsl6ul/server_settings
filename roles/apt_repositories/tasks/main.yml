@@ -7,14 +7,14 @@
     group: root
     mode: "0755"
 
-- name: Download apt keys
+- name: Download Apt keys
   ansible.builtin.get_url:
     url: "{{ item.url }}"
     dest: "{{ item.dest | default(apt_repositories_default_keyrings) }}"
     mode: '0644'
   loop: "{{ apt_repositories_key_urls }}"
 
-- name: "Set apt repositories, One-Line-Style Format"
+- name: "Set Apt repositories, One-Line-Style Format"
   ansible.builtin.apt_repository:
     codename: "{{ item.codename | default(omit) }}"
     filename: "{{ item.filename | default(apt_repositories_default_filename) }}"
@@ -28,7 +28,7 @@
     validate_certs: "{{ item.validate_certs | default(omit) }}"
   loop: "{{ apt_repositories_list }}"
 
-- name: "Set apt repositories, Deb822-style Format"
+- name: "Set Apt repositories, Deb822-style Format"
   ansible.builtin.deb822_repository:
     allow_downgrade_to_insecure: "{{ item.allow_downgrade_to_insecure | default(omit) }}"
     allow_insecure: "{{ item.allow_insecure | default(omit) }}"
@@ -90,7 +90,22 @@
     state: absent
   when: apt_repositories_pinning is undefined
 
-- name: APT Update Cache (apt_repositories_update_cache=true)
+- name: Set Apt proxy file
+  ansible.builtin.copy:
+    dest: /etc/apt/apt.conf.d/60apt_repositories_proxy
+    content: "{{ apt_repositories_proxy }}"
+    mode: 0644
+    owner: root
+    group: root
+  when: apt_repositories_proxy is defined
+
+- name: Remove Apt proxy file
+  ansible.builtin.file:
+    path: /etc/apt/apt.conf.d/60apt_repositories_proxy
+    state: absent
+  when: apt_repositories_proxy is undefined
+
+- name: Apt Update Cache (apt_repositories_update_cache=true)
   ansible.builtin.apt:
     update_cache: "{{ apt_repositories_update_cache }}"
     cache_valid_time: "{{ apt_repositories_cache_valid_time }}"
